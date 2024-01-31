@@ -1,33 +1,18 @@
 function handleGameBoard(userInput){
     userInput = globalToLocal(userInput)
-
-    //Make sure possible actions are right
-    console.log(gameObject.gameBoardInfo.selectedAction)
-    clearActions();
-    updateActions(getActorCoord(1), gameObject.gameBoardInfo.selectedAction.shape, 1);
-
-    //Confirm input is in bounds
-    if(userInput[0] >= 0 && userInput[0] <= 4 && userInput[0] >= 0 && userInput[0] <= 4){
-        //Conduct Actions
-        switch(gameObject.gameBoardInfo.selectedAction.name){
-            case "Move":
-                if(gameObject.gameBoardInfo.actionMap[userInput[0]][userInput[1]] == 1){
-                    move(userInput)
-                }
-            break;
-            case "Shoot": 
-                if(gameObject.gameBoardInfo.actionMap[userInput[0]][userInput[1]] == 1){
-                    move(userInput)
-                }    
-            break;        
+    if(gameObject.gameBoardInfo.selectedAction){
+        clearActions();
+        updateActions(getActorCoord(1), gameObject.gameBoardInfo.selectedAction.shape, 1);
+        //Confirm input is in bounds
+        if(userInput[0] >= 0 && userInput[0] <= 4 && userInput[0] >= 0 && userInput[0] <= 4){
+            if(gameObject.gameBoardInfo.actionMap[userInput[0]][userInput[1]] == 1){
+                gameObject.gameBoardInfo.selectedAction.execute(userInput)
+                gameObject.gameBoardInfo.selectedAction = null;
+            }
         }
+        clearActions();
+        updateActions(getActorCoord(1), gameObject.gameBoardInfo.selectedAction.shape, 1);
     }
-    clearActions();
-    updateActions(getActorCoord(1), gameObject.gameBoardInfo.selectedAction.shape, 1);
-}
-
-function move(destination){
-    updateActorLocation(destination)
 }
 
 function updateActorLocation(destination){
