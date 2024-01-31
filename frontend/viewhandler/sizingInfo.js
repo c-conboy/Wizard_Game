@@ -11,3 +11,11 @@ const startTile = [canvas.width/2, 50];
 const actionButtonWidth = 100;
 const actionButtonHeight = 50;
 const actionButtonStart = [2*(canvas.width/3), 50];
+
+const magicButtonWidth = 25;
+const magicButtonHeight = 25;
+const magicButtonStart = [(canvas.width/4), 50];
+const magicButtonOffset = 50;
+
+
+

@@ -1,6 +1,5 @@
 let gameObject = new Object();
 gameObject.gameBoardInfo = new Object();
-gameObject.uiInfo = new Object();
 
 gameObject.gameBoardInfo.backGroundMap = [[0,0,0,0,0],
                 [0,0,0,0,0],
@@ -21,14 +20,20 @@ gameObject.gameBoardInfo.actorsMap =
              [0,0,0,0,0],
              [0,0,0,0,0]]
 
-gameObject.gameBoardInfo.selectedAction = new Object(); 
-gameObject.gameBoardInfo.selectedAction.Name = "Move";
-gameObject.gameBoardInfo.selectedAction.Shape = [[0,1],[0,-1],[-1,0],[1,0]];
+gameObject.gameBoardInfo.selectedAction = moveAction  
+
+gameObject.uiInfo = new Object();
 gameObject.uiInfo.possibleActions = new Object();
-gameObject.uiInfo.possibleActions.Actions = ["Move", "Shoot"];
+gameObject.uiInfo.possibleActions.Actions = [moveAction];
 gameObject.uiInfo.possibleActions.Location = actionButtonStart;
 gameObject.uiInfo.possibleActions.Height = actionButtonHeight;
 gameObject.uiInfo.possibleActions.Width = actionButtonWidth;
+gameObject.uiInfo.magicBoard = new Object();
+gameObject.uiInfo.magicBoard.Nodes = [0, 0];
+gameObject.uiInfo.magicBoard.Location = magicButtonStart;
+gameObject.uiInfo.magicBoard.Height = magicButtonHeight;
+gameObject.uiInfo.magicBoard.Width = magicButtonWidth;
+gameObject.uiInfo.magicBoard.Offset = magicButtonOffset;
 
 let prev = [11111111,1111111111]
 
@@ -41,7 +46,6 @@ function calculate(userInput){
     }
     
     handleUI(userInput);
-
     handleGameBoard(userInput);
 
     return gameObject
