@@ -1,8 +1,6 @@
 function draw(gameObject){
     ctx.clear();
-    drawMap(gameObject.gameBoardInfo.backGroundMap);
-    drawActions(gameObject.gameBoardInfo.actionMap);
-    drawActors(gameObject.gameBoardInfo.actorsMap);
+    drawGameBoard(gameObject.gameBoardInfo);
     drawUI(gameObject.uiInfo)
 }
 

@@ -1,17 +1,15 @@
 function handleGameBoard(userInput){
     userInput = globalToLocal(userInput)
     if(gameObject.gameBoardInfo.selectedAction){
-        clearActions();
         updateActions(getActorCoord(1), gameObject.gameBoardInfo.selectedAction.shape, 1);
         //Confirm input is in bounds
-        if(userInput[0] >= 0 && userInput[0] <= 4 && userInput[0] >= 0 && userInput[0] <= 4){
+        if(userInput[0] >= 0 && userInput[0] <= 4 && userInput[1] >= 0 && userInput[1] <= 4){
             if(gameObject.gameBoardInfo.actionMap[userInput[0]][userInput[1]] == 1){
                 gameObject.gameBoardInfo.selectedAction.execute(userInput)
                 gameObject.gameBoardInfo.selectedAction = null;
+                clearActions();
             }
         }
-        clearActions();
-        updateActions(getActorCoord(1), gameObject.gameBoardInfo.selectedAction.shape, 1);
     }
 }
 

@@ -14,6 +14,6 @@
 
 function executeMain(){
     draw(gameObject)
-    click = acceptInput();
-    gameObject = calculate(click);
+    userInput = acceptInput();
+    gameObject = calculate(userInput);
 }
