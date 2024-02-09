@@ -5,7 +5,7 @@ function drawUI(uiInfo){
 }
 
 function drawPossibleActions(possibleActions, hoveredActionIndex){
-    for(x = 0; x<possibleActions.Actions.length; x += 1){
+    for(let x = 0; x<possibleActions.Actions.length; x += 1){
         ctx.beginPath();
         if(hoveredActionIndex == x){
             ctx.lineWidth = 4;
@@ -24,7 +24,7 @@ function drawPossibleActions(possibleActions, hoveredActionIndex){
 
 
 function drawMagicBaord(magicBoard, hoveredNodeIndex){
-    for(x = 0; x<magicBoard.Nodes.length; x += 1){
+    for(let x = 0; x<magicBoard.Nodes.length; x += 1){
         ctx.beginPath();
         if(hoveredNodeIndex == x){
             ctx.lineWidth = 4;

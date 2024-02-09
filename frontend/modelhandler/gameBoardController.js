@@ -1,9 +1,9 @@
 function handleGameBoard(userInput){
     userInput = globalToLocal(userInput)
     if(gameObject.gameBoardInfo.selectedAction){
-        updateActions(getActorCoord(1), gameObject.gameBoardInfo.selectedAction.shape, 1);
+        gameObject.gameBoardInfo.selectedAction.calculatePossible(getActorCoord(1), 1, gameObject.gameBoardInfo.selectedAction.range);
         //Confirm input is in bounds
-        if(userInput[0] >= 0 && userInput[0] <= 4 && userInput[1] >= 0 && userInput[1] <= 4){
+        if(userInput[0] >= 0 && userInput[0] <= gameObject.gameBoardInfo.bounds[0] && userInput[1] >= 0 && userInput[1] <= gameObject.gameBoardInfo.bounds[1]){
             if(gameObject.gameBoardInfo.actionMap[userInput[0]][userInput[1]] == 1){
                 gameObject.gameBoardInfo.selectedAction.execute(userInput)
                 gameObject.gameBoardInfo.selectedAction = null;
@@ -18,15 +18,6 @@ function updateActorLocation(destination){
     gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = 1;
 }
 
-function updateActions(actorLocation, shape, value){
-    for (let tile of shape){
-        let actionLocation = [actorLocation[0] + tile[0], actorLocation[1] + tile[1]];
-        if(actionLocation[0] <= 4 && actionLocation[1] <= 4 && actionLocation[0] >= 0 && actionLocation[1] >= 0 ){
-            gameObject.gameBoardInfo.actionMap[actionLocation[0]][actionLocation[1]] = value; 
-        }
-    }
-}
-
 function globalToLocal(clickCoordinates){
     GlobalX = clickCoordinates[0]
     GlobalY = clickCoordinates[1]
@@ -36,8 +27,8 @@ function globalToLocal(clickCoordinates){
 }
 
 function getActorCoord(id){
-    for(x = 0; x< gameObject.gameBoardInfo.actorsMap.length; x++){
-        for(y = 0; y < gameObject.gameBoardInfo.actorsMap[x].length; y++){
+    for(let x = 0; x< gameObject.gameBoardInfo.actorsMap.length; x++){
+        for(let y = 0; y < gameObject.gameBoardInfo.actorsMap[x].length; y++){
             if(gameObject.gameBoardInfo.actorsMap[x][y] == id){
                 return [x,y]
             }
@@ -46,8 +37,8 @@ function getActorCoord(id){
 }
 
 function clearActions(){
-    for(x = 0; x< gameObject.gameBoardInfo.actionMap.length; x++){
-        for(y = 0; y < gameObject.gameBoardInfo.actionMap[x].length; y++){
+    for(let x = 0; x< gameObject.gameBoardInfo.actionMap.length; x++){
+        for(let y = 0; y < gameObject.gameBoardInfo.actionMap[x].length; y++){
             gameObject.gameBoardInfo.actionMap[x][y] = 0;
         }
     }

@@ -5,18 +5,18 @@ function handleUI(userInput){
 
 function handlePossibleActions(userInput){
     //for each button
-    for(x=0; x<gameObject.uiInfo.possibleActions.Actions.length; x += 1){
+    for(let x=0; x<gameObject.uiInfo.possibleActions.Actions.length; x += 1){
         //check if clickedOn
         if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.possibleActions.Location[0], gameObject.uiInfo.possibleActions.Location[1] + (gameObject.uiInfo.possibleActions.Height * x)], gameObject.uiInfo.possibleActions.Width, gameObject.uiInfo.possibleActions.Height)){
             gameObject.gameBoardInfo.selectedAction = gameObject.uiInfo.possibleActions.Actions[x];
             clearActions();
-            updateActions(getActorCoord(1), gameObject.gameBoardInfo.selectedAction.shape, 1);
+            gameObject.gameBoardInfo.selectedAction.calculatePossible(getActorCoord(1), 1, gameObject.gameBoardInfo.selectedAction.range);
         }
     }
 }
 
 function handleMagicBoard(userInput){
-    for(x=0; x<gameObject.uiInfo.magicBoard.Nodes.length; x += 1){
+    for(let x=0; x<gameObject.uiInfo.magicBoard.Nodes.length; x += 1){
         if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.magicBoard.Location[0] + (gameObject.uiInfo.magicBoard.Offset * x), gameObject.uiInfo.magicBoard.Location[1]], gameObject.uiInfo.magicBoard.Width, gameObject.uiInfo.magicBoard.Height)){
             if(gameObject.uiInfo.magicBoard.Nodes[x] == 1){
                 gameObject.uiInfo.magicBoard.Nodes[x] = 0;
@@ -58,7 +58,7 @@ function checkInRect(clickX, clickY, rectStart, rectW, rectH){
 function updateHoveredObjects(userInput){
     //Check Actions
     gameObject.uiInfo.possibleActions.hoveredActionIndex = 10000;
-    for(x=0; x<gameObject.uiInfo.possibleActions.Actions.length; x += 1){
+    for(let x=0; x<gameObject.uiInfo.possibleActions.Actions.length; x += 1){
         if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.possibleActions.Location[0], gameObject.uiInfo.possibleActions.Location[1] + (gameObject.uiInfo.possibleActions.Height * x)], gameObject.uiInfo.possibleActions.Width, gameObject.uiInfo.possibleActions.Height)){
             gameObject.uiInfo.possibleActions.hoveredActionIndex = x;
         }
@@ -66,7 +66,7 @@ function updateHoveredObjects(userInput){
 
     //Check Nodes
     gameObject.uiInfo.magicBoard.hoveredNodeIndex = 10000;
-    for(x=0; x<gameObject.uiInfo.magicBoard.Nodes.length; x += 1){
+    for(let x=0; x<gameObject.uiInfo.magicBoard.Nodes.length; x += 1){
         if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.magicBoard.Location[0] + (gameObject.uiInfo.magicBoard.Offset * x), gameObject.uiInfo.magicBoard.Location[1]], gameObject.uiInfo.magicBoard.Width, gameObject.uiInfo.magicBoard.Height)){
             gameObject.uiInfo.magicBoard.hoveredNodeIndex = x;
         }
@@ -76,7 +76,7 @@ function updateHoveredObjects(userInput){
     gameObject.gameBoardInfo.hoveredTileIndex = [10000,10000];
     localMouseCoords = globalToLocal(userInput); 
   
-    if(localMouseCoords[0] >= 0 && localMouseCoords[0] <= 4 && localMouseCoords[1] >= 0 && localMouseCoords[1] <= 4){
+    if(localMouseCoords[0] >= 0 && localMouseCoords[0] <= gameObject.gameBoardInfo.bounds[0] && localMouseCoords[1] >= 0 && localMouseCoords[1] <= gameObject.gameBoardInfo.bounds[1]){
         gameObject.gameBoardInfo.hoveredTileIndex = localMouseCoords;
     }
 }
