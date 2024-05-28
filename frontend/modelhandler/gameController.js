@@ -29,6 +29,7 @@ gameObject.gameBoardInfo.actorsMap =
 gameObject.gameBoardInfo.selectedAction = moveAction  
 gameObject.gameBoardInfo.hoveredTileIndex = [null,null];
 gameObject.gameBoardInfo.bounds = [gameObject.gameBoardInfo.actionMap.length - 1, gameObject.gameBoardInfo.actionMap[0].length - 1];
+gameObject.gameBoardInfo.animatedObjects = null
 
 gameObject.uiInfo = new Object();
 gameObject.uiInfo.possibleActions = new Object();
@@ -46,13 +47,28 @@ gameObject.uiInfo.magicBoard.Width = magicButtonWidth;
 gameObject.uiInfo.magicBoard.Offset = magicButtonOffset;
 gameObject.uiInfo.magicBoard.hoveredNodeIndex = null;
 
+let animationInfo = new Object();
+animationInfo.currentAnimation = null;
+animationInfo.frameCounter = 0;
+animationInfo.inAnimation = false;
 
 function calculate(userInput){
+    if(animationInfo.inAnimation){
+        gameObject.gameBoardInfo.animatedObjects = animationInfo.currentAnimation.nextFrame();
+        animationInfo.frameCounter = animationInfo.frameCounter - 1;
+        if(animationInfo.frameCounter < 0){
+            animationInfo.currentAnimation.onComplete();
+            animationInfo.currentAnimation = null;
+            animationInfo.inAnimation = false;
+            animationInfo.frameCounter = null; 
+            gameObject.gameBoardInfo.animatedObjects = null
+        }
+        return gameObject;
+    }
     if(!userInput.mouseInformation.click){
         updateHoveredObjects(userInput.mouseInformation.coordinates);
         return gameObject;
     }
-
     handleUI(userInput.mouseInformation.clickCoordinates);
     handleGameBoard(userInput.mouseInformation.clickCoordinates);
     return gameObject;

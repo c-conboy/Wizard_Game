@@ -26,6 +26,12 @@ function globalToLocal(clickCoordinates){
     return [Math.floor(LocalX),Math.floor(LocalY)]
 }
 
+function localToGlobal(localCoordinates) {
+    px = startTile[0] + (localCoordinates[0]-localCoordinates[1])*(tileWidth/2);
+    py = startTile[1] + (localCoordinates[0]+localCoordinates[1])*(tileHeight/2);
+    return [px, py];
+}
+
 function getActorCoord(id){
     for(let x = 0; x< gameObject.gameBoardInfo.actorsMap.length; x++){
         for(let y = 0; y < gameObject.gameBoardInfo.actorsMap[x].length; y++){

@@ -2,6 +2,7 @@ function drawGameBoard(gameBoardInfo){
     drawMap(gameBoardInfo.backGroundMap, gameBoardInfo.hoveredTileIndex);
     drawActions(gameBoardInfo.actionMap, gameBoardInfo.hoveredTileIndex);
     drawActors(gameBoardInfo.actorsMap, gameBoardInfo.hoveredTileIndex);
+    drawAnimatedObjects(gameBoardInfo.animatedObjects);
 }
 
 

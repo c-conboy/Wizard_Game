@@ -12,7 +12,7 @@ shootAction = new Action("Shoot", actionWithinRange, shoot, 2);
 jumpAction = new Action("Jump", actionWithinRangeLOS, move, 2.5);
 
 function move(destination){
-    updateActorLocation(destination)
+    moveAnimation.initialize(getActorCoord(1), destination)
 }
 
 function shoot(destination){
