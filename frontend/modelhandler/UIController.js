@@ -32,15 +32,15 @@ function handleMagicBoard(userInput){
     }
 
     if(gameObject.uiInfo.magicBoard.Nodes[0] == 1 && gameObject.uiInfo.magicBoard.Nodes[1] == 0){
-        gameObject.uiInfo.possibleActions.Actions = [jumpAction];
+        gameObject.uiInfo.possibleActions.Actions = [jumpAction, moveAction];
     }
 
     if(gameObject.uiInfo.magicBoard.Nodes[0] == 0 && gameObject.uiInfo.magicBoard.Nodes[1] == 1){
-        gameObject.uiInfo.possibleActions.Actions = [shootAction];
+        gameObject.uiInfo.possibleActions.Actions = [shootAction, moveAction];
     }
 
     if(gameObject.uiInfo.magicBoard.Nodes[0] == 1 && gameObject.uiInfo.magicBoard.Nodes[1] == 1){
-        gameObject.uiInfo.possibleActions.Actions = [moveAction, jumpAction, shootAction];
+        gameObject.uiInfo.possibleActions.Actions = [moveAction, jumpAction, shootAction, shakeAction];
     }
 }
 

@@ -14,8 +14,18 @@ function handleGameBoard(userInput){
 }
 
 function updateActorLocation(destination){
-    gameObject.gameBoardInfo.actorsMap[getActorCoord(1)[0]][getActorCoord(1)[1]] = 0;
+    var actorCoord = getActorCoord(1);
+    if(actorCoord != null){
+        gameObject.gameBoardInfo.actorsMap[actorCoord[0]][actorCoord[1]] = 0;
+    }
     gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = 1;
+}
+
+function clearActorLocation(){
+    var actorCoord = getActorCoord(1);
+    if(actorCoord != null){
+        gameObject.gameBoardInfo.actorsMap[actorCoord[0]][actorCoord[1]] = 0;
+    }
 }
 
 function globalToLocal(clickCoordinates){
@@ -36,16 +46,25 @@ function getActorCoord(id){
     for(let x = 0; x< gameObject.gameBoardInfo.actorsMap.length; x++){
         for(let y = 0; y < gameObject.gameBoardInfo.actorsMap[x].length; y++){
             if(gameObject.gameBoardInfo.actorsMap[x][y] == id){
-                return [x,y]
+                return [x,y];
             }
         }
     }
+    return null
 }
 
 function clearActions(){
     for(let x = 0; x< gameObject.gameBoardInfo.actionMap.length; x++){
         for(let y = 0; y < gameObject.gameBoardInfo.actionMap[x].length; y++){
             gameObject.gameBoardInfo.actionMap[x][y] = 0;
+        }
+    }
+}
+
+function updateActorsMap(targetValue, finalValue, coordinate){
+    if(coordinate[0] >= 0 && coordinate[0] <= gameObject.gameBoardInfo.bounds[0] && coordinate[1] >= 0 && coordinate[1] <= gameObject.gameBoardInfo.bounds[1]){
+        if(gameObject.gameBoardInfo.actorsMap[coordinate[0]][coordinate[1]] == targetValue){
+            gameObject.gameBoardInfo.actorsMap[coordinate[0]][coordinate[1]] = finalValue;
         }
     }
 }

@@ -26,10 +26,11 @@ gameObject.gameBoardInfo.actorsMap =
                                         [0,0,0,3,0,0,0],
                                         [0,0,0,3,0,0,0]]
 
+gameObject.gameBoardInfo.tempActorsMap = null;
 gameObject.gameBoardInfo.selectedAction = moveAction  
 gameObject.gameBoardInfo.hoveredTileIndex = [null,null];
 gameObject.gameBoardInfo.bounds = [gameObject.gameBoardInfo.actionMap.length - 1, gameObject.gameBoardInfo.actionMap[0].length - 1];
-gameObject.gameBoardInfo.animatedObjects = null
+gameObject.gameBoardInfo.animatedObjects = null;
 
 gameObject.uiInfo = new Object();
 gameObject.uiInfo.possibleActions = new Object();
@@ -57,7 +58,8 @@ function calculate(userInput){
         gameObject.gameBoardInfo.animatedObjects = animationInfo.currentAnimation.nextFrame();
         animationInfo.frameCounter = animationInfo.frameCounter - 1;
         if(animationInfo.frameCounter < 0){
-            animationInfo.currentAnimation.onComplete();
+            //animationInfo.currentAnimation.onComplete;
+            gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.tempActorsMap;
             animationInfo.currentAnimation = null;
             animationInfo.inAnimation = false;
             animationInfo.frameCounter = null; 

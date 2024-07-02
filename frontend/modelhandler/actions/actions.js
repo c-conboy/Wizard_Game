@@ -10,13 +10,45 @@ class Action {
 moveAction = new Action("Move", actionWithinRange, move, 1);
 shootAction = new Action("Shoot", actionWithinRange, shoot, 2);
 jumpAction = new Action("Jump", actionWithinRangeLOS, move, 2.5);
+shakeAction = new Action("Shake", actionWithinRange, shake, 0);
 
 function move(destination){
-    moveAnimation.initialize(getActorCoord(1), destination)
+    moveAnimation.initialize(getActorCoord(1), destination);
+    clearActorLocation()
+    //Store pre animation actors map
+    gameObject.gameBoardInfo.tempActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
+    //Update original actors map with results of action
+    updateActorLocation(destination);
+    //Store the post animation actors map
+    var postAnimationActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
+    //Set the actors map to pre animation actors map
+    gameObject.gameBoardInfo.actorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.tempActorsMap));
+    //Set the temporary actors map to the post animation actors map
+    gameObject.gameBoardInfo.tempActorsMap = postAnimationActorsMap;
 }
 
 function shoot(destination){
     gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = 2;
+}
+
+function shake(){
+    var initialActorLocation = getActorCoord(1);
+    shakeAnimation.initialize(initialActorLocation);
+    clearActorLocation();
+    //Store pre animation actors map
+    gameObject.gameBoardInfo.tempActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
+    //Update original actors map with results of action
+    updateActorLocation(initialActorLocation);
+    updateActorsMap(3,0,[initialActorLocation[0]+1, initialActorLocation[1]]);
+    updateActorsMap(3,0,[initialActorLocation[0]-1, initialActorLocation[1]]);
+    updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]+1]);
+    updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]-1]);
+    //Store the post animation actors map
+    var postAnimationActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
+    //Set the actors map to pre animation actors map
+    gameObject.gameBoardInfo.actorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.tempActorsMap));
+    //Set the temporary actors map to the post animation actors map
+    gameObject.gameBoardInfo.tempActorsMap = postAnimationActorsMap;
 }
 
 function actionWithinRange(actorLocation, value, range){
@@ -32,7 +64,6 @@ function actionWithinRange(actorLocation, value, range){
             }
         }
     }
-
 }
 
 function actionWithinRangeLOS(actorLocation, value, range){

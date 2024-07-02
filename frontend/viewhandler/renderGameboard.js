@@ -63,7 +63,6 @@ function drawActors(map, hoveredTileIndex){
                     drawWall(x, y, hoveredTileIndex);
                     break;
             }
-
         }
     }
 }
