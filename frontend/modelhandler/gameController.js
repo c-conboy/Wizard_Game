@@ -48,6 +48,14 @@ gameObject.uiInfo.magicBoard.Width = magicButtonWidth;
 gameObject.uiInfo.magicBoard.Offset = magicButtonOffset;
 gameObject.uiInfo.magicBoard.hoveredNodeIndex = null;
 
+gameObject.uiInfo.rotate = new Object();
+gameObject.uiInfo.rotate.hoveredTriangleIndex = null;
+gameObject.uiInfo.rotate.Location = rotateStart;
+gameObject.uiInfo.rotate.Height = rotateHeight;
+gameObject.uiInfo.rotate.Width = rotateWidth;
+gameObject.uiInfo.rotate.Offset = rotateOffset;
+
+
 let animationInfo = new Object();
 animationInfo.currentAnimation = null;
 animationInfo.frameCounter = 0;

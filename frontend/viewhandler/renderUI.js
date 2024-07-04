@@ -2,6 +2,7 @@
 function drawUI(uiInfo){
     drawPossibleActions(uiInfo.possibleActions, uiInfo.possibleActions.hoveredActionIndex);
     drawMagicBaord(uiInfo.magicBoard, uiInfo.magicBoard.hoveredNodeIndex);
+    drawRotateButtons(uiInfo.rotate)
 }
 
 function drawPossibleActions(possibleActions, hoveredActionIndex){
@@ -40,4 +41,32 @@ function drawMagicBaord(magicBoard, hoveredNodeIndex){
         ctx.rect(magicBoard.Location[0] + (magicBoard.Offset * x), magicBoard.Location[1], magicBoard.Width, magicBoard.Height);
         ctx.stroke();
     }
+}
+
+function drawRotateButtons(rotate){
+    //Draw Left pointing triangle
+    ctx.beginPath();
+    if(rotate.hoveredTriangleIndex == 0){
+        ctx.fillStyle = "Yellow";
+    }else{
+        ctx.fillStyle = "red";
+    }
+    ctx.moveTo(rotate.Location[0] - rotate.Width - rotate.Offset/2, rotate.Location[1]);
+    ctx.lineTo(rotate.Location[0] - rotate.Offset/2, rotate.Location[1] + rotate.Height/2);
+    ctx.lineTo(rotate.Location[0] - rotate.Offset/2, rotate.Location[1] - rotate.Height/2);
+    ctx.fill();
+    ctx.closePath();
+
+    //Draw Right pointing triangle
+    ctx.beginPath();
+    if(rotate.hoveredTriangleIndex == 1){
+        ctx.fillStyle = "Yellow";
+    }else{
+        ctx.fillStyle = "red";
+    }
+    ctx.moveTo(rotate.Location[0] + rotate.Width + rotate.Offset/2, rotate.Location[1]);
+    ctx.lineTo(rotate.Location[0] + rotate.Offset/2, rotate.Location[1] + rotate.Height/2);
+    ctx.lineTo(rotate.Location[0] + rotate.Offset/2, rotate.Location[1] - rotate.Height/2);
+    ctx.fill();
+    ctx.closePath();
 }

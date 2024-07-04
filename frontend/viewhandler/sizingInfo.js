@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 
+const numberOfTilesY = 10;
 const tileWidth = 50;
 const tileHeight = 25; 
 const radius = Math.sqrt((tileWidth/2)**2 + (tileHeight/2)**2)/2;
@@ -16,6 +17,11 @@ const magicButtonWidth = 25;
 const magicButtonHeight = 25;
 const magicButtonStart = [(canvas.width/4), 50];
 const magicButtonOffset = 50;
+
+const rotateStart = [canvas.width/2, tileHeight*numberOfTilesY];
+const rotateHeight = 25;
+const rotateWidth = 25;
+const rotateOffset = 50;
 
 
 
