@@ -13,12 +13,12 @@ jumpAction = new Action("Jump", actionWithinRangeLOS, move, 2.5);
 shakeAction = new Action("Shake", actionWithinRange, shake, 0);
 
 function move(destination){
-    moveAnimation.initialize(getActorCoord(1), destination);
-    clearActorLocation()
+    moveAnimation.initialize(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id), destination);
+    clearActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id)
     //Store pre animation actors map
     gameObject.gameBoardInfo.tempActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
     //Update original actors map with results of action
-    updateActorLocation(destination);
+    updateActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id, destination);
     //Store the post animation actors map
     var postAnimationActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
     //Set the actors map to pre animation actors map
@@ -28,17 +28,17 @@ function move(destination){
 }
 
 function shoot(destination){
-    gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = 2;
+    gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = 4;
 }
 
 function shake(){
-    var initialActorLocation = getActorCoord(1);
+    var initialActorLocation = getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id);
     shakeAnimation.initialize(initialActorLocation);
-    clearActorLocation();
+    clearActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id);
     //Store pre animation actors map
     gameObject.gameBoardInfo.tempActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
     //Update original actors map with results of action
-    updateActorLocation(initialActorLocation);
+    updateActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id, initialActorLocation);
     updateActorsMap(3,0,[initialActorLocation[0]+1, initialActorLocation[1]]);
     updateActorsMap(3,0,[initialActorLocation[0]-1, initialActorLocation[1]]);
     updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]+1]);
@@ -60,7 +60,9 @@ function actionWithinRange(actorLocation, value, range){
     for (let y = top; y <= bottom; y++) {
         for (let x = left; x <= right; x++) {
             if (insideCircle(actorLocation, [x,y], range)) {
-                gameObject.gameBoardInfo.actionMap[x][y] = value; 
+                if(gameObject.gameBoardInfo.actorsMap[x][y] == 0 || gameObject.gameBoardInfo.actorsMap[x][y] == 3){
+                    gameObject.gameBoardInfo.actionMap[x][y] = value; 
+                }
             }
         }
     }
@@ -80,7 +82,7 @@ function actionWithinRangeLOS(actorLocation, value, range){
             if(!inLOS(actorLocation, [x,y], range)){
                 continue;
             }
-            if(gameObject.gameBoardInfo.actorsMap[x][y] == 3){
+            if(gameObject.gameBoardInfo.actorsMap[x][y] != 0){
                 continue;
             }
             gameObject.gameBoardInfo.actionMap[x][y] = value; 

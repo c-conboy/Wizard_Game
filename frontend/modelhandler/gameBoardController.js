@@ -1,28 +1,34 @@
 function handleGameBoard(userInput){
     userInput = globalToLocal(userInput)
     if(gameObject.gameBoardInfo.selectedAction){
-        gameObject.gameBoardInfo.selectedAction.calculatePossible(getActorCoord(1), 1, gameObject.gameBoardInfo.selectedAction.range);
+        gameObject.gameBoardInfo.selectedAction.calculatePossible(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id, 1, gameObject.gameBoardInfo.selectedAction.range);
         //Confirm input is in bounds
         if(userInput[0] >= 0 && userInput[0] <= gameObject.gameBoardInfo.bounds[0] && userInput[1] >= 0 && userInput[1] <= gameObject.gameBoardInfo.bounds[1]){
             if(gameObject.gameBoardInfo.actionMap[userInput[0]][userInput[1]] == 1){
                 gameObject.gameBoardInfo.selectedAction.execute(userInput)
                 gameObject.gameBoardInfo.selectedAction = null;
                 clearActions();
+                gameObject.actorInfo.turnIndex += 1;
+                if(gameObject.actorInfo.turnIndex >= gameObject.actorInfo.actors.length){
+                    gameObject.actorInfo.turnIndex = 0;
+                }
+                gameObject.uiInfo.possibleActions.Actions = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions;
+                gameObject.uiInfo.magicBoard.Nodes = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].magicBoard.Nodes;
             }
         }
     }
 }
 
-function updateActorLocation(destination){
-    var actorCoord = getActorCoord(1);
+function updateActorLocation(id, destination){
+    var actorCoord = getActorCoord(id);
     if(actorCoord != null){
         gameObject.gameBoardInfo.actorsMap[actorCoord[0]][actorCoord[1]] = 0;
     }
-    gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = 1;
+    gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = id;
 }
 
-function clearActorLocation(){
-    var actorCoord = getActorCoord(1);
+function clearActorLocation(id){
+    var actorCoord = getActorCoord(id);
     if(actorCoord != null){
         gameObject.gameBoardInfo.actorsMap[actorCoord[0]][actorCoord[1]] = 0;
     }

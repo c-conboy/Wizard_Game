@@ -56,7 +56,7 @@ function drawActors(map, hoveredTileIndex){
     for (let x = 0; x < map[0].length; x += 1) {
         for (let y = 0; y < map.length; y += 1) {
             switch(map[x][y]){
-                case 1: case 2:
+                case 1: case 2: case 4:
                     drawActor(x, y, map[x][y], hoveredTileIndex);
                     break;
                 case 3:
@@ -77,6 +77,9 @@ function drawActor(x, y, a, hoveredTileIndex){
             ctx.fillStyle = "Red";
             break;
         case 2:
+            ctx.fillStyle = "Blue";
+            break;
+        case 4:
             ctx.fillStyle = "Green";
             break;
     }

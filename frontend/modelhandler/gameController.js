@@ -21,10 +21,14 @@ gameObject.gameBoardInfo.actorsMap =
                                         [[0,0,0,3,0,0,0],
                                         [0,0,0,3,0,0,0],
                                         [0,0,3,3,3,0,0],
-                                        [0,0,0,1,0,0,0],
+                                        [1,0,0,0,0,0,2],
                                         [0,0,3,3,3,0,0],
                                         [0,0,0,3,0,0,0],
                                         [0,0,0,3,0,0,0]]
+
+gameObject.actorInfo = new Object ();
+gameObject.actorInfo.turnIndex = 0;  
+gameObject.actorInfo.actors = [player1, player2];                                   
 
 gameObject.gameBoardInfo.tempActorsMap = null;
 gameObject.gameBoardInfo.selectedAction = moveAction  

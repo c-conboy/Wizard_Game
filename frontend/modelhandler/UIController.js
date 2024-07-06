@@ -2,61 +2,52 @@ function handleUI(userInput){
     handleMagicBoard(userInput);
     handlePossibleActions(userInput);
     handleRotate(userInput);
-}
 
-function handleRotate(userInput){
-    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] - gameObject.uiInfo.rotate.Width - gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
-        gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[index]).reverse());
-        gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[index]).reverse());
-        gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[index]).reverse());
-    }
-    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] + gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
-        gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[row.length-1-index]));
-        gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[row.length-1-index]));
-        gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[row.length-1-index]));
-    }
 }
-
 
 function handlePossibleActions(userInput){
     //for each button
-    for(let x=0; x<gameObject.uiInfo.possibleActions.Actions.length; x += 1){
+    for(let x=0; x<gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions.length; x += 1){
         //check if clickedOn
         if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.possibleActions.Location[0], gameObject.uiInfo.possibleActions.Location[1] + (gameObject.uiInfo.possibleActions.Height * x)], gameObject.uiInfo.possibleActions.Width, gameObject.uiInfo.possibleActions.Height)){
-            gameObject.gameBoardInfo.selectedAction = gameObject.uiInfo.possibleActions.Actions[x];
+            gameObject.gameBoardInfo.selectedAction = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions[x];
             clearActions();
-            gameObject.gameBoardInfo.selectedAction.calculatePossible(getActorCoord(1), 1, gameObject.gameBoardInfo.selectedAction.range);
+            gameObject.gameBoardInfo.selectedAction.calculatePossible(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id), 1, gameObject.gameBoardInfo.selectedAction.range);
         }
     }
 }
 
 function handleMagicBoard(userInput){
-    for(let x=0; x<gameObject.uiInfo.magicBoard.Nodes.length; x += 1){
+    var nodes = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].magicBoard.Nodes;
+    var actions = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions;
+    for(let x=0; x<nodes.length; x += 1){
         if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.magicBoard.Location[0] + (gameObject.uiInfo.magicBoard.Offset * x), gameObject.uiInfo.magicBoard.Location[1]], gameObject.uiInfo.magicBoard.Width, gameObject.uiInfo.magicBoard.Height)){
-            if(gameObject.uiInfo.magicBoard.Nodes[x] == 1){
-                gameObject.uiInfo.magicBoard.Nodes[x] = 0;
+            if(nodes[x] == 1){
+                gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].magicBoard.Nodes[x] = 0;
             }else{
-                gameObject.uiInfo.magicBoard.Nodes[x] = 1;
+                nodes[x] = 1;
             }
         }
     }
 
     //Gonna need to build out some sort of algorithm here
-    if(gameObject.uiInfo.magicBoard.Nodes[0] == 0 && gameObject.uiInfo.magicBoard.Nodes[1] == 0){
-        gameObject.uiInfo.possibleActions.Actions = [moveAction];
+    if(nodes[0] == 0 && nodes[1] == 0){
+        gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions = [moveAction];
     }
 
-    if(gameObject.uiInfo.magicBoard.Nodes[0] == 1 && gameObject.uiInfo.magicBoard.Nodes[1] == 0){
-        gameObject.uiInfo.possibleActions.Actions = [jumpAction, moveAction];
+    if(nodes[0] == 1 && nodes[1] == 0){
+        gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions = [jumpAction, moveAction];
     }
 
-    if(gameObject.uiInfo.magicBoard.Nodes[0] == 0 && gameObject.uiInfo.magicBoard.Nodes[1] == 1){
-        gameObject.uiInfo.possibleActions.Actions = [shootAction, moveAction];
+    if(nodes[0] == 0 && nodes[1] == 1){
+        gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions = [shootAction, moveAction];
     }
 
-    if(gameObject.uiInfo.magicBoard.Nodes[0] == 1 && gameObject.uiInfo.magicBoard.Nodes[1] == 1){
-        gameObject.uiInfo.possibleActions.Actions = [moveAction, jumpAction, shootAction, shakeAction];
+    if(nodes[0] == 1 && nodes[1] == 1){
+        gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions = [moveAction, jumpAction, shootAction, shakeAction];
     }
+    gameObject.uiInfo.possibleActions.Actions = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions;
+    gameObject.uiInfo.magicBoard.Nodes = nodes;
 }
 
 function checkInRect(clickX, clickY, rectStart, rectW, rectH){
@@ -105,4 +96,15 @@ function updateHoveredObjects(userInput){
     }
 }
 
-
+function handleRotate(userInput){
+    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] - gameObject.uiInfo.rotate.Width - gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
+        gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[index]).reverse());
+        gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[index]).reverse());
+        gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[index]).reverse());
+    }
+    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] + gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
+        gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[row.length-1-index]));
+        gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[row.length-1-index]));
+        gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[row.length-1-index]));
+    }
+}

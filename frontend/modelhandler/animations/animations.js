@@ -6,19 +6,20 @@ class Animation {
     position;
     speed;
     distance;
+    object;
 
-    constructor(name, initialize, nextFrame, objects) {
+    constructor(name, initialize, nextFrame, object) {
         this.name = name;
         this.initialize = initialize; 
         this.nextFrame = nextFrame;
-        this.objects = objects;
     }
 }
 
-moveAnimation = new Animation("move", initializeMove, nextFrameMove, "player");
-shakeAnimation = new Animation("shake", initializeShake, nextFrameShake, "player");
+moveAnimation = new Animation("move", initializeMove, nextFrameMove);
+shakeAnimation = new Animation("shake", initializeShake, nextFrameShake);
 
 function initializeMove(start, destination){
+    this.object = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id;
     this.localDestination = destination;
     this.start = localToGlobal(start);
     this.finish = localToGlobal(destination);
@@ -42,7 +43,7 @@ function nextFrameMove(){
     this.position[1] += (this.finish[1] - this.start[1]) / this.distance * this.speed;
 
     animatedObject = new Object();
-    animatedObject.object = this.objects;
+    animatedObject.object = this.object;
     animatedObject.location = this.position;
 
     this.frameCount = this.frameCount - 1;
