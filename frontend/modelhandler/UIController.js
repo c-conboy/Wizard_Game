@@ -2,7 +2,7 @@ function handleUI(userInput){
     handleMagicBoard(userInput);
     handlePossibleActions(userInput);
     handleRotate(userInput);
-
+    handleEndTurn(userInput);
 }
 
 function handlePossibleActions(userInput){
@@ -94,6 +94,13 @@ function updateHoveredObjects(userInput){
     if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] + gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
         gameObject.uiInfo.rotate.hoveredTriangleIndex = 1;
     }
+
+    //Check End Turn Button
+    if(checkInRect(userInput[0], userInput[1], gameObject.uiInfo.endTurn.Location, gameObject.uiInfo.endTurn.Width, gameObject.uiInfo.endTurn.Height)){
+        gameObject.uiInfo.endTurn.Hovered = true;
+    }else{
+        gameObject.uiInfo.endTurn.Hovered = false;
+    }
 }
 
 function handleRotate(userInput){
@@ -106,5 +113,11 @@ function handleRotate(userInput){
         gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[row.length-1-index]));
         gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[row.length-1-index]));
         gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[row.length-1-index]));
+    }
+}
+
+function handleEndTurn(userInput){
+    if(checkInRect(userInput[0], userInput[1], gameObject.uiInfo.endTurn.Location, gameObject.uiInfo.endTurn.Width, gameObject.uiInfo.endTurn.Height)){
+        endTurn();
     }
 }

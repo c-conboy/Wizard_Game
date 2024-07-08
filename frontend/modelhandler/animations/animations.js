@@ -25,8 +25,8 @@ function initializeMove(start, destination){
     this.finish = localToGlobal(destination);
     this.position = localToGlobal(start);
 
-    var dx = this.finish[0] - this.start[0];
-    var dy = this.finish[1] - this.start[1];
+    let dx = this.finish[0] - this.start[0];
+    let dy = this.finish[1] - this.start[1];
     this.distance = Math.sqrt(dx * dx + dy * dy);
 
     this.speed = 5;
@@ -52,8 +52,8 @@ function nextFrameMove(){
 }
 
 function initializeShake(start){
-    var intensity = 2;
-    var globalStart = localToGlobal(start);
+    let intensity = 2;
+    let globalStart = localToGlobal(start);
     this.start = globalStart;
     this.distance = intensity;
     this.finish = globalStart;
@@ -73,8 +73,8 @@ function initializeShake(start){
 function nextFrameShake(){
     //Every third frame update position to right
     //If in an even frame update position to the right
-    var numberOfDivisors = 0;
-    var sumOfDivisors = 0;
+    let numberOfDivisors = 0;
+    let sumOfDivisors = 0;
 
     while(sumOfDivisors <= this.frameCount){
         sumOfDivisors +=  this.speed;

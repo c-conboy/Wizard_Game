@@ -59,6 +59,11 @@ gameObject.uiInfo.rotate.Height = rotateHeight;
 gameObject.uiInfo.rotate.Width = rotateWidth;
 gameObject.uiInfo.rotate.Offset = rotateOffset;
 
+gameObject.uiInfo.endTurn = new Object();
+gameObject.uiInfo.endTurn.Hovered = false;
+gameObject.uiInfo.endTurn.Location = endTurnStart;
+gameObject.uiInfo.endTurn.Height = endTurnHeight;
+gameObject.uiInfo.endTurn.Width = endTurnWidth;
 
 let animationInfo = new Object();
 animationInfo.currentAnimation = null;

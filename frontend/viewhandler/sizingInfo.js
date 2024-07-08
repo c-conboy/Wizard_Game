@@ -23,5 +23,9 @@ const rotateHeight = 25;
 const rotateWidth = 25;
 const rotateOffset = 50;
 
+const endTurnStart = [actionButtonStart[0], actionButtonStart[1] + actionButtonHeight*5];
+const endTurnWidth = actionButtonWidth*1.5;
+const endTurnHeight = actionButtonHeight;
+
 
 

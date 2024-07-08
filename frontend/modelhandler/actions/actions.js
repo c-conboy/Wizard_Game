@@ -20,7 +20,7 @@ function move(destination){
     //Update original actors map with results of action
     updateActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id, destination);
     //Store the post animation actors map
-    var postAnimationActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
+    let postAnimationActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
     //Set the actors map to pre animation actors map
     gameObject.gameBoardInfo.actorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.tempActorsMap));
     //Set the temporary actors map to the post animation actors map
@@ -32,7 +32,7 @@ function shoot(destination){
 }
 
 function shake(){
-    var initialActorLocation = getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id);
+    let initialActorLocation = getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id);
     shakeAnimation.initialize(initialActorLocation);
     clearActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id);
     //Store pre animation actors map
@@ -44,7 +44,7 @@ function shake(){
     updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]+1]);
     updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]-1]);
     //Store the post animation actors map
-    var postAnimationActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
+    let postAnimationActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
     //Set the actors map to pre animation actors map
     gameObject.gameBoardInfo.actorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.tempActorsMap));
     //Set the temporary actors map to the post animation actors map

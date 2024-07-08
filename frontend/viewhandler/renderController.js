@@ -1,6 +1,6 @@
 function draw(gameObject){
     ctx.clear();
-    drawGameBoard(gameObject.gameBoardInfo);
+    drawGameBoard(gameObject.gameBoardInfo, gameObject.actorInfo);
     drawUI(gameObject.uiInfo)
 }
 
@@ -15,7 +15,7 @@ CanvasRenderingContext2D.prototype.clear =
 
     if (preserveTransform) {
       this.restore();
-    }           
+    }       
 };
 
 

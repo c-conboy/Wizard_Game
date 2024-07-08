@@ -1,7 +1,7 @@
-function drawGameBoard(gameBoardInfo){
+function drawGameBoard(gameBoardInfo, actorInfo){
     drawMap(gameBoardInfo.backGroundMap, gameBoardInfo.hoveredTileIndex);
     drawActions(gameBoardInfo.actionMap, gameBoardInfo.hoveredTileIndex);
-    drawActors(gameBoardInfo.actorsMap, gameBoardInfo.hoveredTileIndex);
+    drawActors(gameBoardInfo.actorsMap, gameBoardInfo.hoveredTileIndex, actorInfo);
     drawAnimatedObjects(gameBoardInfo.animatedObjects);
 }
 
@@ -52,12 +52,12 @@ function drawAction(x, y, a, hovered){
 
 
 //Rendering Actors
-function drawActors(map, hoveredTileIndex){
+function drawActors(map, hoveredTileIndex, actorInfo){
     for (let x = 0; x < map[0].length; x += 1) {
         for (let y = 0; y < map.length; y += 1) {
             switch(map[x][y]){
                 case 1: case 2: case 4:
-                    drawActor(x, y, map[x][y], hoveredTileIndex);
+                    drawActor(x, y, map[x][y], hoveredTileIndex, actorInfo);
                     break;
                 case 3:
                     drawWall(x, y, hoveredTileIndex);
@@ -67,7 +67,7 @@ function drawActors(map, hoveredTileIndex){
     }
 }
 
-function drawActor(x, y, a, hoveredTileIndex){
+function drawActor(x, y, a, hoveredTileIndex, actorInfo){
     //Determine what to draw
     if(a == 0){
         return
@@ -93,6 +93,17 @@ function drawActor(x, y, a, hoveredTileIndex){
         ctx.arc(px, py, radius, 0, 2 * Math.PI);
     }
     ctx.fill();
+
+    //Draw Arrow if selected
+    if(a == actorInfo.actors[actorInfo.turnIndex].id){
+        ctx.beginPath();
+        ctx.fillStyle = "Yellow";
+        ctx.moveTo(px, py-radius-3);
+        ctx.lineTo(px+tileWidth/4,  py-radius-tileHeight);
+        ctx.lineTo(px-tileWidth/4,  py-radius-tileHeight);
+        ctx.fill();
+        ctx.closePath();
+    }
 }
 
 //Rendering Map

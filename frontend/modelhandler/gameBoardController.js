@@ -8,19 +8,13 @@ function handleGameBoard(userInput){
                 gameObject.gameBoardInfo.selectedAction.execute(userInput)
                 gameObject.gameBoardInfo.selectedAction = null;
                 clearActions();
-                gameObject.actorInfo.turnIndex += 1;
-                if(gameObject.actorInfo.turnIndex >= gameObject.actorInfo.actors.length){
-                    gameObject.actorInfo.turnIndex = 0;
-                }
-                gameObject.uiInfo.possibleActions.Actions = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions;
-                gameObject.uiInfo.magicBoard.Nodes = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].magicBoard.Nodes;
             }
         }
     }
 }
 
 function updateActorLocation(id, destination){
-    var actorCoord = getActorCoord(id);
+    let actorCoord = getActorCoord(id);
     if(actorCoord != null){
         gameObject.gameBoardInfo.actorsMap[actorCoord[0]][actorCoord[1]] = 0;
     }
@@ -28,7 +22,7 @@ function updateActorLocation(id, destination){
 }
 
 function clearActorLocation(id){
-    var actorCoord = getActorCoord(id);
+    let actorCoord = getActorCoord(id);
     if(actorCoord != null){
         gameObject.gameBoardInfo.actorsMap[actorCoord[0]][actorCoord[1]] = 0;
     }
@@ -73,4 +67,14 @@ function updateActorsMap(targetValue, finalValue, coordinate){
             gameObject.gameBoardInfo.actorsMap[coordinate[0]][coordinate[1]] = finalValue;
         }
     }
+}
+
+function endTurn(){
+    clearActions();
+    gameObject.actorInfo.turnIndex += 1;
+    if(gameObject.actorInfo.turnIndex >= gameObject.actorInfo.actors.length){
+        gameObject.actorInfo.turnIndex = 0;
+    }
+    gameObject.uiInfo.possibleActions.Actions = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions;
+    gameObject.uiInfo.magicBoard.Nodes = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].magicBoard.Nodes;
 }
