@@ -27,5 +27,39 @@ const endTurnStart = [actionButtonStart[0], actionButtonStart[1] + actionButtonH
 const endTurnWidth = actionButtonWidth*1.5;
 const endTurnHeight = actionButtonHeight;
 
+const pointCoordinates = generateCoordinates();
+const pointSizeSmall = 3;
+const pointSizeLarge = 18;
+
+
+function generateCoordinates(){
+    let triangleWidth = 60;
+    let triangleHeight = triangleWidth*Math.sqrt(3)/2;
+    let startingLocation = [magicButtonStart[0]+magicButtonWidth, magicButtonStart[1]+60];
+
+    let points = new Array();;
+
+    //Top Point
+    points.push(startingLocation);
+
+    //Top Row
+    for(let x = 0; x < 4; x++){
+        points.push([startingLocation[0] - triangleWidth*1.5 + x*triangleWidth, startingLocation[1]+triangleHeight]);
+    }
+
+    //Middle Row
+    for(let x = 0; x < 3; x++){
+        points.push([startingLocation[0] - triangleWidth*1 + x*triangleWidth, startingLocation[1]+triangleHeight*2]);
+    }
+
+    //Bottom Row
+    for(let x = 0; x < 4; x++){
+        points.push([startingLocation[0] - triangleWidth*1.5 + x*triangleWidth, startingLocation[1]+triangleHeight*3]);
+    }
+
+    //Bottom Point
+    points.push([startingLocation[0], startingLocation[1]+triangleHeight*4]);
+    return points;
+}
 
 

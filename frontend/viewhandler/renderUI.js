@@ -4,7 +4,7 @@ function drawUI(uiInfo){
     drawMagicBaord(uiInfo.magicBoard, uiInfo.magicBoard.hoveredNodeIndex);
     drawRotateButtons(uiInfo.rotate)
     drawEndTurn(uiInfo.endTurn);
-    generateCoordinates();
+    drawHexBoard(uiInfo.hexBoard);
 }
 
 function drawPossibleActions(possibleActions, hoveredActionIndex){
@@ -88,43 +88,66 @@ function drawEndTurn(endTurn){
     ctx.fillText("End Turn", endTurn.Location[0] + endTurn.Width/10, endTurn.Location[1] + endTurn.Height/1.5);
 }
 
-function generateCoordinates(){
-    let triangleWidth = 60;
-    let triangleHeight = triangleWidth*Math.sqrt(3)/2;
-    let startingLocation = [magicButtonStart[0]+magicButtonWidth, magicButtonStart[1]+60];
-
-    let points = new Array();;
-
-    //Top Point
-    points.push(startingLocation);
-
-    //Top Row
-    for(let x = 0; x < 4; x++){
-        points.push([startingLocation[0] - triangleWidth*1.5 + x*triangleWidth, startingLocation[1]+triangleHeight]);
-    }
-
-    //Middle Row
-    for(let x = 0; x < 3; x++){
-        points.push([startingLocation[0] - triangleWidth*1 + x*triangleWidth, startingLocation[1]+triangleHeight*2]);
-    }
-
-    //Bottom Row
-    for(let x = 0; x < 4; x++){
-        points.push([startingLocation[0] - triangleWidth*1.5 + x*triangleWidth, startingLocation[1]+triangleHeight*3]);
-    }
-
-    //Bottom Point
-    points.push([startingLocation[0], startingLocation[1]+triangleHeight*4]);
-
-    points.forEach(drawNode);
+function drawHexBoard(hexBoard){
+    hexBoard.nodes.forEach(drawNode);
 }
 
-function drawNode(point){
-    px = point[0];
-    py = point[1];
-
+function drawNode(node){
+    px = node.coordinate[0];
+    py = node.coordinate[1];
     ctx.beginPath();
-    ctx.arc(px, py, 6, 0, 2 * Math.PI);
+    ctx.arc(px, py, node.pointSizeSmall, 0, 2 * Math.PI);
+    ctx.fillStyle = "Black";
     ctx.fill();
     ctx.closePath();
+
+    if(node.activated == "true"){
+        ctx.beginPath();
+        ctx.strokeStyle = "Red";
+        ctx.arc(px, py, node.pointSizeLarge, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    if(node.status == "selected"){
+        ctx.beginPath();
+        ctx.strokeStyle = "Green";
+        ctx.arc(px, py, node.pointSizeLarge, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    if(node.hovered){
+        ctx.beginPath();
+        ctx.strokeStyle = "Yellow";
+        ctx.arc(px, py, node.pointSizeLarge, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    for(let index = 0; index < node.neighbours.length; index++){
+        if(node.neighbours[index].index > node.index){
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.strokeStyle = "Black";
+            ctx.setLineDash([3, 9]);
+            ctx.lineTo(node.neighbours[index].coordinate[0], node.neighbours[index].coordinate[1]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.closePath();
+        }
+    }
+
+    for(let index = 0; index < node.links.length; index++){
+        if(node.links[index].index > node.index){
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.strokeStyle = "Red";
+            ctx.setLineDash([3, 9]);
+            ctx.lineTo(node.links[index].coordinate[0], node.links[index].coordinate[1]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.closePath();
+        }
+    }
 }

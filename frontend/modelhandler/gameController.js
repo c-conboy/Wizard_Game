@@ -65,6 +65,8 @@ gameObject.uiInfo.endTurn.Location = endTurnStart;
 gameObject.uiInfo.endTurn.Height = endTurnHeight;
 gameObject.uiInfo.endTurn.Width = endTurnWidth;
 
+gameObject.uiInfo.hexBoard = new HexBoard(pointCoordinates, pointSizeSmall, pointSizeLarge);
+
 let animationInfo = new Object();
 animationInfo.currentAnimation = null;
 animationInfo.frameCounter = 0;

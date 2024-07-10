@@ -3,6 +3,7 @@ function handleUI(userInput){
     handlePossibleActions(userInput);
     handleRotate(userInput);
     handleEndTurn(userInput);
+    handleHexBoard(userInput);
 }
 
 function handlePossibleActions(userInput){
@@ -50,17 +51,6 @@ function handleMagicBoard(userInput){
     gameObject.uiInfo.magicBoard.Nodes = nodes;
 }
 
-function checkInRect(clickX, clickY, rectStart, rectW, rectH){
-    if(
-        clickX > rectStart[0] &&
-        clickX < rectStart[0] + rectW &&
-        clickY > rectStart[1]  &&
-        clickY < rectStart[1] + rectH
-    ){
-        return true;
-    }
-}
-
 function updateHoveredObjects(userInput){
     //Check Actions
     gameObject.uiInfo.possibleActions.hoveredActionIndex = 10000;
@@ -101,23 +91,105 @@ function updateHoveredObjects(userInput){
     }else{
         gameObject.uiInfo.endTurn.Hovered = false;
     }
+
+    //Check the HexBoard
+    for(let nodeIndex = 0; nodeIndex < gameObject.uiInfo.hexBoard.nodes.length; nodeIndex++){
+        if(checkInCircle(userInput[0], userInput[1], gameObject.uiInfo.hexBoard.nodes[nodeIndex].coordinate, gameObject.uiInfo.hexBoard.pointSizeLarge)){
+            gameObject.uiInfo.hexBoard.nodes[nodeIndex].hovered = true;
+        }else{
+            gameObject.uiInfo.hexBoard.nodes[nodeIndex].hovered = false;
+        }
+    }
 }
 
 function handleRotate(userInput){
     if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] - gameObject.uiInfo.rotate.Width - gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
-        gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[index]).reverse());
-        gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[index]).reverse());
-        gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[index]).reverse());
-    }
-    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] + gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
         gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[row.length-1-index]));
         gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[row.length-1-index]));
         gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[row.length-1-index]));
+    }
+    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] + gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
+        gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[index]).reverse());
+        gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[index]).reverse());
+        gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[index]).reverse());
     }
 }
 
 function handleEndTurn(userInput){
     if(checkInRect(userInput[0], userInput[1], gameObject.uiInfo.endTurn.Location, gameObject.uiInfo.endTurn.Width, gameObject.uiInfo.endTurn.Height)){
         endTurn();
+    }
+}
+
+function handleHexBoard(userInput){
+    for(let nodeIndex = 0; nodeIndex < gameObject.uiInfo.hexBoard.nodes.length; nodeIndex++){
+        if(checkInCircle(userInput[0], userInput[1], gameObject.uiInfo.hexBoard.nodes[nodeIndex].coordinate, gameObject.uiInfo.hexBoard.pointSizeLarge)){
+            if(gameObject.uiInfo.hexBoard.selectedNode == null){
+                if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].status == "unselected" && gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated == "false"){
+                    gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated = "true";
+                    continue;
+                }
+                if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].status == "unselected" && gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated == "true"){
+                    gameObject.uiInfo.hexBoard.nodes[nodeIndex].status = "selected";
+                    gameObject.uiInfo.hexBoard.selectedNode = gameObject.uiInfo.hexBoard.nodes[nodeIndex];
+                    continue;
+                }
+            }else{
+                if(gameObject.uiInfo.hexBoard.selectedNode.neighbours.indexOf(gameObject.uiInfo.hexBoard.nodes[nodeIndex]) != -1){
+                    if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated == "false"){
+                        if(checkLinkSize(gameObject.uiInfo.hexBoard.selectedNode.index)){
+                            gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated = "true";
+                            gameObject.uiInfo.hexBoard.nodes[nodeIndex].links.push(gameObject.uiInfo.hexBoard.selectedNode);
+                            gameObject.uiInfo.hexBoard.selectedNode.links.push(gameObject.uiInfo.hexBoard.nodes[nodeIndex]);
+                            gameObject.uiInfo.hexBoard.selectedNode.status = "unselected";
+                            gameObject.uiInfo.hexBoard.selectedNode = null;
+                            continue;
+                        }
+                    }
+                }
+                if(nodeIndex == gameObject.uiInfo.hexBoard.selectedNode.index){
+                    gameObject.uiInfo.hexBoard.selectedNode.status = "unselected";
+                    gameObject.uiInfo.hexBoard.selectedNode = null;
+                }
+            }
+        }
+    }
+}
+
+function checkLinkSize(nodeIndex){
+    //Check if I have any links
+    if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].links.length == 0){
+        return true;
+    }
+    //Check my own link length
+    if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].links.length >= 2){
+        return false;
+    }
+    //go through each linked node and check link length
+    if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].links[0].links.length >= 2){
+        return false;
+    }
+    return true;
+}
+
+function checkInCircle(xIn, yIn, pointCoordinates, radius){
+    dx = pointCoordinates[0] - xIn;
+    dy = pointCoordinates[1] - yIn;
+    dxy = Math.sqrt((dx*dx) + (dy*dy))
+    if(dxy < radius){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function checkInRect(clickX, clickY, rectStart, rectW, rectH){
+    if(
+        clickX > rectStart[0] &&
+        clickX < rectStart[0] + rectW &&
+        clickY > rectStart[1]  &&
+        clickY < rectStart[1] + rectH
+    ){
+        return true;
     }
 }

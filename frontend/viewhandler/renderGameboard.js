@@ -168,7 +168,7 @@ function drawWall(x, y, hoveredTileIndex){
     let py = startTile[1] + (x+y)*(tileHeight/2);
 
     if(hovered){
-        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 8]);
         ctx.strokeStyle = '#040410';
         ctx.fillStyle = 'rgba(0,0,0,0)';
     }else{
@@ -192,15 +192,6 @@ function drawWall(x, y, hoveredTileIndex){
     ctx.closePath()
     ctx.fill();
 
-    if(hovered){
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#040410';
-        ctx.fillStyle = 'rgba(0,0,0,0)';
-    }else{
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = '#040400';
-        ctx.fillStyle = '#686868';
-    }
 
     //Draw Right Face
     ctx.beginPath();
@@ -216,17 +207,6 @@ function drawWall(x, y, hoveredTileIndex){
     ctx.closePath()
     ctx.fill();
 
-
-    if(hovered){
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#040410';
-        ctx.fillStyle = 'rgba(0,0,0,0)';
-    }else{
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = '#040400';
-        ctx.fillStyle = '#999998';
-    }
-
     py = py - wallHeight;
     //Draw Second Square
     ctx.beginPath(); // Start a new path
@@ -241,4 +221,6 @@ function drawWall(x, y, hoveredTileIndex){
     ctx.stroke(); // Render the path
     ctx.closePath()
     ctx.fill();
+    ctx.setLineDash([]);
+
 }
