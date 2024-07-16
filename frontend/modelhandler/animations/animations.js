@@ -32,9 +32,9 @@ function initializeMove(start, destination){
     this.speed = 5;
     this.frameCount = Math.ceil(this.distance/this.speed);
 
-    animationInfo.frameCounter = this.frameCount;
-    animationInfo.inAnimation = true;
-    animationInfo.currentAnimation = this;
+    gameObject. animationInfo.frameCounter = this.frameCount;
+    gameObject.animationInfo.inAnimation = true;
+    gameObject.animationInfo.currentAnimation = this;
 }
 
 function nextFrameMove(){
@@ -65,9 +65,9 @@ function initializeShake(start){
     repetitions = 10;
 
     this.frameCount = Math.ceil(this.distance*4*repetitions/this.speed);
-    animationInfo.frameCounter = this.frameCount;
-    animationInfo.inAnimation = true;
-    animationInfo.currentAnimation = this;
+    gameObject.animationInfo.frameCounter = this.frameCount;
+    gameObject.animationInfo.inAnimation = true;
+    gameObject.animationInfo.currentAnimation = this;
 }
 
 function nextFrameShake(){

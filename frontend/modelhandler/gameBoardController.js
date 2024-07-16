@@ -76,5 +76,4 @@ function endTurn(){
         gameObject.actorInfo.turnIndex = 0;
     }
     gameObject.uiInfo.possibleActions.Actions = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions;
-    gameObject.uiInfo.magicBoard.Nodes = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].magicBoard.Nodes;
 }

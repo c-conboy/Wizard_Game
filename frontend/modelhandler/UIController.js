@@ -1,16 +1,16 @@
 function handleUI(userInput){
-    handleMagicBoard(userInput);
+    handleHexBoard(userInput);
     handlePossibleActions(userInput);
     handleRotate(userInput);
     handleEndTurn(userInput);
-    handleHexBoard(userInput);
 }
 
 function handlePossibleActions(userInput){
+    turnIndex = gameObject.actorInfo.turnIndex;
     //for each button
     for(let x=0; x<gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions.length; x += 1){
         //check if clickedOn
-        if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.possibleActions.Location[0], gameObject.uiInfo.possibleActions.Location[1] + (gameObject.uiInfo.possibleActions.Height * x)], gameObject.uiInfo.possibleActions.Width, gameObject.uiInfo.possibleActions.Height)){
+        if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.possibleActions[turnIndex].Location[0], gameObject.uiInfo.possibleActions[turnIndex].Location[1] + (gameObject.uiInfo.possibleActions[turnIndex].Height * x)], gameObject.uiInfo.possibleActions[turnIndex].Width, gameObject.uiInfo.possibleActions[turnIndex].Height)){
             gameObject.gameBoardInfo.selectedAction = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions[x];
             clearActions();
             gameObject.gameBoardInfo.selectedAction.calculatePossible(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id), 1, gameObject.gameBoardInfo.selectedAction.range);
@@ -18,53 +18,12 @@ function handlePossibleActions(userInput){
     }
 }
 
-function handleMagicBoard(userInput){
-    var nodes = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].magicBoard.Nodes;
-    var actions = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions;
-    for(let x=0; x<nodes.length; x += 1){
-        if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.magicBoard.Location[0] + (gameObject.uiInfo.magicBoard.Offset * x), gameObject.uiInfo.magicBoard.Location[1]], gameObject.uiInfo.magicBoard.Width, gameObject.uiInfo.magicBoard.Height)){
-            if(nodes[x] == 1){
-                gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].magicBoard.Nodes[x] = 0;
-            }else{
-                nodes[x] = 1;
-            }
-        }
-    }
-
-    //Gonna need to build out some sort of algorithm here
-    if(nodes[0] == 0 && nodes[1] == 0){
-        gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions = [moveAction];
-    }
-
-    if(nodes[0] == 1 && nodes[1] == 0){
-        gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions = [jumpAction, moveAction];
-    }
-
-    if(nodes[0] == 0 && nodes[1] == 1){
-        gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions = [shootAction, moveAction];
-    }
-
-    if(nodes[0] == 1 && nodes[1] == 1){
-        gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions = [moveAction, jumpAction, shootAction, shakeAction];
-    }
-    gameObject.uiInfo.possibleActions.Actions = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions;
-    gameObject.uiInfo.magicBoard.Nodes = nodes;
-}
-
 function updateHoveredObjects(userInput){
     //Check Actions
-    gameObject.uiInfo.possibleActions.hoveredActionIndex = 10000;
-    for(let x=0; x<gameObject.uiInfo.possibleActions.Actions.length; x += 1){
-        if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.possibleActions.Location[0], gameObject.uiInfo.possibleActions.Location[1] + (gameObject.uiInfo.possibleActions.Height * x)], gameObject.uiInfo.possibleActions.Width, gameObject.uiInfo.possibleActions.Height)){
-            gameObject.uiInfo.possibleActions.hoveredActionIndex = x;
-        }
-    }
-
-    //Check Nodes
-    gameObject.uiInfo.magicBoard.hoveredNodeIndex = 10000;
-    for(let x=0; x<gameObject.uiInfo.magicBoard.Nodes.length; x += 1){
-        if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.magicBoard.Location[0] + (gameObject.uiInfo.magicBoard.Offset * x), gameObject.uiInfo.magicBoard.Location[1]], gameObject.uiInfo.magicBoard.Width, gameObject.uiInfo.magicBoard.Height)){
-            gameObject.uiInfo.magicBoard.hoveredNodeIndex = x;
+    gameObject.uiInfo.possibleActions[gameObject.actorInfo.turnIndex].hoveredActionIndex = 10000;
+    for(let x=0; x<gameObject.uiInfo.possibleActions[gameObject.actorInfo.turnIndex].Actions.length; x += 1){
+        if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.possibleActions[gameObject.actorInfo.turnIndex].Location[0], gameObject.uiInfo.possibleActions[gameObject.actorInfo.turnIndex].Location[1] + (gameObject.uiInfo.possibleActions[gameObject.actorInfo.turnIndex].Height * x)], gameObject.uiInfo.possibleActions[gameObject.actorInfo.turnIndex].Width, gameObject.uiInfo.possibleActions[gameObject.actorInfo.turnIndex].Height)){
+            gameObject.uiInfo.possibleActions[gameObject.actorInfo.turnIndex].hoveredActionIndex = x;
         }
     }
 
@@ -93,11 +52,11 @@ function updateHoveredObjects(userInput){
     }
 
     //Check the HexBoard
-    for(let nodeIndex = 0; nodeIndex < gameObject.uiInfo.hexBoard.nodes.length; nodeIndex++){
-        if(checkInCircle(userInput[0], userInput[1], gameObject.uiInfo.hexBoard.nodes[nodeIndex].coordinate, gameObject.uiInfo.hexBoard.pointSizeLarge)){
-            gameObject.uiInfo.hexBoard.nodes[nodeIndex].hovered = true;
+    for(let nodeIndex = 0; nodeIndex < gameObject.uiInfo.hexBoards[gameObject.actorInfo.turnIndex].nodes.length; nodeIndex++){
+        if(checkInCircle(userInput[0], userInput[1], gameObject.uiInfo.hexBoards[gameObject.actorInfo.turnIndex].nodes[nodeIndex].coordinate, gameObject.uiInfo.hexBoards[gameObject.actorInfo.turnIndex].pointSizeLarge + 5)){
+            gameObject.uiInfo.hexBoards[gameObject.actorInfo.turnIndex].nodes[nodeIndex].hovered = true;
         }else{
-            gameObject.uiInfo.hexBoard.nodes[nodeIndex].hovered = false;
+            gameObject.uiInfo.hexBoards[gameObject.actorInfo.turnIndex].nodes[nodeIndex].hovered = false;
         }
     }
 }
@@ -122,51 +81,55 @@ function handleEndTurn(userInput){
 }
 
 function handleHexBoard(userInput){
-    for(let nodeIndex = 0; nodeIndex < gameObject.uiInfo.hexBoard.nodes.length; nodeIndex++){
-        if(checkInCircle(userInput[0], userInput[1], gameObject.uiInfo.hexBoard.nodes[nodeIndex].coordinate, gameObject.uiInfo.hexBoard.pointSizeLarge)){
-            if(gameObject.uiInfo.hexBoard.selectedNode == null){
-                if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].status == "unselected" && gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated == "false"){
-                    gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated = "true";
+    let turnIndex = gameObject.actorInfo.turnIndex;
+    for(let nodeIndex = 0; nodeIndex < gameObject.uiInfo.hexBoards[turnIndex].nodes.length; nodeIndex++){
+        if(checkInCircle(userInput[0], userInput[1], gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].coordinate, gameObject.uiInfo.hexBoards[turnIndex].pointSizeLarge + 5)){
+            if(gameObject.uiInfo.hexBoards[turnIndex].selectedNode == null){
+                if(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].status == "unselected" && gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated == "false"){
+                    gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated = "true";
                     continue;
                 }
-                if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].status == "unselected" && gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated == "true"){
-                    gameObject.uiInfo.hexBoard.nodes[nodeIndex].status = "selected";
-                    gameObject.uiInfo.hexBoard.selectedNode = gameObject.uiInfo.hexBoard.nodes[nodeIndex];
+                if(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].status == "unselected" && gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated == "true"){
+                    gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].status = "selected";
+                    gameObject.uiInfo.hexBoards[turnIndex].selectedNode = gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex];
                     continue;
                 }
             }else{
-                if(gameObject.uiInfo.hexBoard.selectedNode.neighbours.indexOf(gameObject.uiInfo.hexBoard.nodes[nodeIndex]) != -1){
-                    if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated == "false"){
-                        if(checkLinkSize(gameObject.uiInfo.hexBoard.selectedNode.index)){
-                            gameObject.uiInfo.hexBoard.nodes[nodeIndex].activated = "true";
-                            gameObject.uiInfo.hexBoard.nodes[nodeIndex].links.push(gameObject.uiInfo.hexBoard.selectedNode);
-                            gameObject.uiInfo.hexBoard.selectedNode.links.push(gameObject.uiInfo.hexBoard.nodes[nodeIndex]);
-                            gameObject.uiInfo.hexBoard.selectedNode.status = "unselected";
-                            gameObject.uiInfo.hexBoard.selectedNode = null;
+                if(gameObject.uiInfo.hexBoards[turnIndex].selectedNode.neighbours.includes(nodeIndex)){
+                    if(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated == "false"){
+                        if(checkLinkSize(gameObject.uiInfo.hexBoards[turnIndex].selectedNode.index)){
+                            gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated = "true";
+                            gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].links.push(gameObject.uiInfo.hexBoards[turnIndex].selectedNode.index);
+                            gameObject.uiInfo.hexBoards[turnIndex].selectedNode.links.push(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].index);
+                            gameObject.uiInfo.hexBoards[turnIndex].selectedNode.status = "unselected";
+                            gameObject.uiInfo.hexBoards[turnIndex].selectedNode = null;
                             continue;
                         }
                     }
                 }
-                if(nodeIndex == gameObject.uiInfo.hexBoard.selectedNode.index){
-                    gameObject.uiInfo.hexBoard.selectedNode.status = "unselected";
-                    gameObject.uiInfo.hexBoard.selectedNode = null;
+                if(nodeIndex == gameObject.uiInfo.hexBoards[turnIndex].selectedNode.index){
+                    gameObject.uiInfo.hexBoards[turnIndex].selectedNode.status = "unselected";
+                    gameObject.uiInfo.hexBoards[turnIndex].selectedNode = null;
                 }
             }
         }
     }
+    updatePossibleAction();
+    gameObject.uiInfo.hexBoards[turnIndex].formTriangles();
 }
 
 function checkLinkSize(nodeIndex){
+    let turnIndex = gameObject.actorInfo.turnIndex;
     //Check if I have any links
-    if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].links.length == 0){
+    if(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].links.length == 0){
         return true;
     }
     //Check my own link length
-    if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].links.length >= 2){
+    if(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].links.length >= 2){
         return false;
     }
-    //go through each linked node and check link length
-    if(gameObject.uiInfo.hexBoard.nodes[nodeIndex].links[0].links.length >= 2){
+    //go through middles linnk  node and check link length
+    if(gameObject.uiInfo.hexBoards[turnIndex].nodes[gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].links[0]].links.length >= 2){
         return false;
     }
     return true;
@@ -192,4 +155,69 @@ function checkInRect(clickX, clickY, rectStart, rectW, rectH){
     ){
         return true;
     }
+}
+
+function updatePossibleAction(){
+    let spellList = gameObject.uiInfo.spellList;
+    gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions = [];
+    //Go through each spell in the spell list
+    for(spellIndex = 0; spellIndex<spellList.spells.length; spellIndex++){
+        //go through each cost in each spell
+        let costMet = true;
+        for(costIndex = 0; costIndex<spellList.spells[spellIndex].cost.length; costIndex++){
+            let nodeIndex = 0;
+            switch(spellList.spells[spellIndex].cost[costIndex]){
+                case "Endurance":
+                    nodeIndex  = 0;
+                    break;
+                case "Spirit":
+                    nodeIndex = 1;
+                    break;
+                case "Air":
+                    nodeIndex = 2;
+                    break;
+                case "Earth":
+                    nodeIndex = 3;
+                    break;
+                case "Unity":
+                    nodeIndex = 4;
+                    break;
+                case "Sun":
+                    nodeIndex = 5;
+                    break;
+                case "Wildcard":
+                    nodeIndex = 6;
+                    break;
+                case "Moon":
+                    nodeIndex = 7;
+                    break;
+                case "Singularity":
+                    nodeIndex = 8;
+                    break;
+                case "Fire":
+                    nodeIndex = 9;
+                    break;
+                case "Water":
+                    nodeIndex = 10;
+                    break;
+                case "Blood":
+                    nodeIndex = 11;
+                    break;
+                case "Change":
+                    nodeIndex = 12;
+                    break;
+                default:
+                    continue;
+            }
+
+            if(gameObject.uiInfo.hexBoards[gameObject.actorInfo.turnIndex].nodes[nodeIndex].activated != "true"){
+                costMet = false;
+            }
+        }
+        if(costMet){
+            //gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions.push(spellList.spells[spellIndex]);
+            gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions.push(spellList.spells[spellIndex]);
+        }
+    }
+    gameObject.uiInfo.possibleActions.Actions = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions;
 }

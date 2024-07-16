@@ -1,13 +1,13 @@
 class Actor {
-    constructor(id) {
+    constructor(id, hexBoard) {
         this.possibleActions = new Object();
-        this.possibleActions.Actions = [moveAction]
-        this.magicBoard = new Object();
-        this.magicBoard.Nodes = [0,0];
+        this.possibleActions.Actions = new Array(moveAction);
+        this.possibleActions.hoveredActionIndex = null;
+        this.hexBoard = hexBoard;
         this.id = id;
         this.selectedAction = moveAction
     }
 }
 
-player1 = new Actor(1);
-player2 = new Actor(2);
+player1 = new Actor(1,new HexBoard(pointCoordinates, pointSizeSmall, pointSizeLarge));
+player2 = new Actor(2,new HexBoard(pointCoordinates2, pointSizeSmall, pointSizeLarge));

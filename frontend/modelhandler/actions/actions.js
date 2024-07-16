@@ -1,16 +1,18 @@
 class Action {
-    constructor(name, calculatePossible, execute, range) {
+    constructor(name, calculatePossible, execute, range, cost, text) {
         this.name = name;
         this.range = range; 
         this.calculatePossible = calculatePossible;
         this.execute = execute;
+        this.cost = cost;
+        this.text = text;
     }
 }
 
-moveAction = new Action("Move", actionWithinRange, move, 1);
-shootAction = new Action("Shoot", actionWithinRange, shoot, 2);
-jumpAction = new Action("Jump", actionWithinRangeLOS, move, 2.5);
-shakeAction = new Action("Shake", actionWithinRange, shake, 0);
+moveAction = new Action("Move", actionWithinRange, move, 1, [], spellDescriptions["Move"]);
+shootAction = new Action("Shoot", actionWithinRange, shoot, 2, ["Fire"], spellDescriptions["Shoot"]);
+jumpAction = new Action("Jump", actionWithinRangeLOS, move, 2.5, ["Sun", "Fire", "Singularity"], spellDescriptions["Jump"]);
+shakeAction = new Action("Shake", actionWithinRange, shake, 0, ["Earth", "Air", "Spirit"], spellDescriptions["Shake"]);
 
 function move(destination){
     moveAnimation.initialize(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id), destination);
