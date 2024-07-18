@@ -50,7 +50,6 @@ gameObject.actorInfo = new Object ();
 gameObject.actorInfo.turnIndex = 0;  
 gameObject.actorInfo.actors = [player1, player2];                                   
 
-gameObject.gameBoardInfo.tempActorsMap = null;
 gameObject.gameBoardInfo.selectedAction = moveAction  
 gameObject.gameBoardInfo.hoveredTileIndex = [null,null];
 gameObject.gameBoardInfo.bounds = [gameObject.gameBoardInfo.actionMap.length - 1, gameObject.gameBoardInfo.actionMap[0].length - 1];
@@ -94,23 +93,28 @@ gameObject.uiInfo.spellList.spellListEntryHeight = spellListEntryHeight;
 gameObject.uiInfo.spellList.entriesPerPage = Math.min(Math.ceil(spellListHeight/spellListEntryHeight), gameObject.uiInfo.spellList.spells.length);
 
 gameObject.animationInfo = new Object();
-gameObject.animationInfo.currentAnimation = null;
-gameObject.animationInfo.frameCounter = 0;
+gameObject.animationInfo.totalFrames = 45;
+gameObject.animationInfo.frameCount = 0;
 gameObject.animationInfo.inAnimation = false;
+gameObject.animationInfo.origin = null;
+gameObject.animationInfo.target = null;
+gameObject.animationInfo.onCompleteMethod = null;
+gameObject.animationInfo.onCompleteArguments = null;
 
 function calculate(userInput){
     if(gameObject.animationInfo.inAnimation){
-        gameObject.gameBoardInfo.animatedObjects = gameObject.animationInfo.currentAnimation.nextFrame();
-        gameObject.animationInfo.frameCounter = gameObject.animationInfo.frameCounter - 1;
-        if(gameObject.animationInfo.frameCounter < 0){
-            //animationInfo.currentAnimation.onComplete;
-            gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.tempActorsMap;
-            gameObject.animationInfo.currentAnimation = null;
+        if(gameObject.animationInfo.frameCount > gameObject.animationInfo.totalFrames){
+            gameObject.animationInfo.frameCount = 0;
             gameObject.animationInfo.inAnimation = false;
-            gameObject.animationInfo.frameCounter = null; 
-            gameObject.gameBoardInfo.animatedObjects = null
+            if(gameObject.animationInfo.onCompleteArguments != null){
+                gameObject.animationInfo.onCompleteMethod(...(gameObject.animationInfo.onCompleteArguments));
+            }else{
+                gameObject.animationInfo.onCompleteMethod();
+            }
+        }else{
+            gameObject.animationInfo.frameCount = gameObject.animationInfo.frameCount + 1;
+            return gameObject;
         }
-        return gameObject;
     }
     if(!userInput.mouseInformation.click){
         updateHoveredObjects(userInput.mouseInformation.coordinates);

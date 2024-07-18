@@ -15,42 +15,32 @@ jumpAction = new Action("Jump", actionWithinRangeLOS, move, 2.5, ["Sun", "Fire",
 shakeAction = new Action("Shake", actionWithinRange, shake, 0, ["Earth", "Air", "Spirit"], spellDescriptions["Shake"]);
 
 function move(destination){
-    moveAnimation.initialize(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id), destination);
-    clearActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id)
-    //Store pre animation actors map
-    gameObject.gameBoardInfo.tempActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
-    //Update original actors map with results of action
-    updateActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id, destination);
-    //Store the post animation actors map
-    let postAnimationActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
-    //Set the actors map to pre animation actors map
-    gameObject.gameBoardInfo.actorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.tempActorsMap));
-    //Set the temporary actors map to the post animation actors map
-    gameObject.gameBoardInfo.tempActorsMap = postAnimationActorsMap;
+    gameObject.animationInfo.origin = localToGlobal(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id));
+    gameObject.animationInfo.target = localToGlobal(destination);
+    gameObject.animationInfo.onCompleteMethod = updateActorLocation;
+    gameObject.animationInfo.onCompleteArguments = [gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id, destination]
+    gameObject.animationInfo.inAnimation = true;
 }
 
 function shoot(destination){
-    gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = 4;
+    gameObject.animationInfo.origin = localToGlobal(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id));
+    gameObject.animationInfo.target = localToGlobal(destination);
+    gameObject.animationInfo.onCompleteMethod = function() {
+        gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = 4;
+    };
+    gameObject.animationInfo.inAnimation = true;
 }
 
 function shake(){
-    let initialActorLocation = getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id);
-    shakeAnimation.initialize(initialActorLocation);
-    clearActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id);
-    //Store pre animation actors map
-    gameObject.gameBoardInfo.tempActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
-    //Update original actors map with results of action
-    updateActorLocation(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id, initialActorLocation);
-    updateActorsMap(3,0,[initialActorLocation[0]+1, initialActorLocation[1]]);
-    updateActorsMap(3,0,[initialActorLocation[0]-1, initialActorLocation[1]]);
-    updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]+1]);
-    updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]-1]);
-    //Store the post animation actors map
-    let postAnimationActorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.actorsMap));
-    //Set the actors map to pre animation actors map
-    gameObject.gameBoardInfo.actorsMap = JSON.parse(JSON.stringify(gameObject.gameBoardInfo.tempActorsMap));
-    //Set the temporary actors map to the post animation actors map
-    gameObject.gameBoardInfo.tempActorsMap = postAnimationActorsMap;
+    gameObject.animationInfo.origin = localToGlobal(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id));
+    gameObject.animationInfo.target = localToGlobal(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id));
+    gameObject.animationInfo.onCompleteMethod = function() {
+        updateActorsMap(3,0,[initialActorLocation[0]+1, initialActorLocation[1]]);
+        updateActorsMap(3,0,[initialActorLocation[0]-1, initialActorLocation[1]]);
+        updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]+1]);
+        updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]-1]);
+    };
+    gameObject.animationInfo.inAnimation = true;
 }
 
 function actionWithinRange(actorLocation, value, range){

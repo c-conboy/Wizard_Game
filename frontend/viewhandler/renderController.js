@@ -2,7 +2,7 @@ function draw(gameObject){
     ctx.clear();
     drawGameBoard(gameObject.gameBoardInfo, gameObject.actorInfo);
     drawUI(gameObject.uiInfo)
-    if(gameObject.animation == true){
+    if(gameObject.animationInfo.inAnimation == true){
       renderAnimation(gameObject);
     }
 }
