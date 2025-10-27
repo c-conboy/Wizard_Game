@@ -2,6 +2,7 @@ function handleUI(userInput){
     handleHexBoard(userInput);
     handlePossibleActions(userInput);
     handleRotate(userInput);
+    handleHeightAdjust(userInput);
     handleEndTurn(userInput);
 }
 
@@ -13,7 +14,7 @@ function handlePossibleActions(userInput){
         if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.possibleActions[turnIndex].Location[0], gameObject.uiInfo.possibleActions[turnIndex].Location[1] + (gameObject.uiInfo.possibleActions[turnIndex].Height * x)], gameObject.uiInfo.possibleActions[turnIndex].Width, gameObject.uiInfo.possibleActions[turnIndex].Height)){
             gameObject.gameBoardInfo.selectedAction = gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].possibleActions.Actions[x];
             clearActions();
-            gameObject.gameBoardInfo.selectedAction.calculatePossible(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id), 1, gameObject.gameBoardInfo.selectedAction.range);
+            gameObject.gameBoardInfo.selectedAction.calculatePossible(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex], 1, gameObject.gameBoardInfo.selectedAction.range);
         }
     }
 }
@@ -29,7 +30,7 @@ function updateHoveredObjects(userInput){
 
     //Check Tiles
     gameObject.gameBoardInfo.hoveredTileIndex = [10000,10000];
-    localMouseCoords = globalToLocal(userInput); 
+    localMouseCoords = globalToLocal(viewHeightAdjustment(userInput)); 
   
     if(localMouseCoords[0] >= 0 && localMouseCoords[0] <= gameObject.gameBoardInfo.bounds[0] && localMouseCoords[1] >= 0 && localMouseCoords[1] <= gameObject.gameBoardInfo.bounds[1]){
         gameObject.gameBoardInfo.hoveredTileIndex = localMouseCoords;
@@ -42,6 +43,15 @@ function updateHoveredObjects(userInput){
     }
     if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] + gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
         gameObject.uiInfo.rotate.hoveredTriangleIndex = 1;
+    }
+
+    //Check Height Adjust Triangles
+    gameObject.uiInfo.heightAdjust.hoveredTriangleIndex = 10000;
+    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.heightAdjust.Location[0] - gameObject.uiInfo.heightAdjust.Width/2, gameObject.uiInfo.heightAdjust.Location[1] + gameObject.uiInfo.heightAdjust.Offset/2], gameObject.uiInfo.heightAdjust.Width, gameObject.uiInfo.heightAdjust.Height)){
+        gameObject.uiInfo.heightAdjust.hoveredTriangleIndex = 1;
+    }
+    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.heightAdjust.Location[0] - gameObject.uiInfo.heightAdjust.Width/2, gameObject.uiInfo.heightAdjust.Location[1] - gameObject.uiInfo.heightAdjust.Height - gameObject.uiInfo.heightAdjust.Offset/2], gameObject.uiInfo.heightAdjust.Width, gameObject.uiInfo.heightAdjust.Height)){
+        gameObject.uiInfo.heightAdjust.hoveredTriangleIndex = 0;
     }
 
     //Check End Turn Button
@@ -65,12 +75,35 @@ function handleRotate(userInput){
     if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] - gameObject.uiInfo.rotate.Width - gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
         gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[row.length-1-index]));
         gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[row.length-1-index]));
-        gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[row.length-1-index]));
+        gameObject.gameBoardInfo.objectsMap = gameObject.gameBoardInfo.objectsMap[0].map((val, index) => gameObject.gameBoardInfo.objectsMap.map(row => row[row.length-1-index]));
     }
     if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.rotate.Location[0] + gameObject.uiInfo.rotate.Offset/2, gameObject.uiInfo.rotate.Location[1] - gameObject.uiInfo.rotate.Height/2], gameObject.uiInfo.rotate.Width, gameObject.uiInfo.rotate.Height)){
         gameObject.gameBoardInfo.backGroundMap = gameObject.gameBoardInfo.backGroundMap[0].map((val, index) => gameObject.gameBoardInfo.backGroundMap.map(row => row[index]).reverse());
         gameObject.gameBoardInfo.actionMap = gameObject.gameBoardInfo.actionMap[0].map((val, index) => gameObject.gameBoardInfo.actionMap.map(row => row[index]).reverse());
-        gameObject.gameBoardInfo.actorsMap = gameObject.gameBoardInfo.actorsMap[0].map((val, index) => gameObject.gameBoardInfo.actorsMap.map(row => row[index]).reverse());
+        gameObject.gameBoardInfo.objectsMap = gameObject.gameBoardInfo.objectsMap[0].map((val, index) => gameObject.gameBoardInfo.objectsMap.map(row => row[index]).reverse());
+    }
+}
+
+function handleHeightAdjust(userInput){
+    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.heightAdjust.Location[0] - gameObject.uiInfo.heightAdjust.Width/2, gameObject.uiInfo.heightAdjust.Location[1] + gameObject.uiInfo.heightAdjust.Offset/2], gameObject.uiInfo.heightAdjust.Width, gameObject.uiInfo.heightAdjust.Height)){
+        if(gameObject.gameBoardInfo.autoViewHeight){
+            gameObject.gameBoardInfo.autoViewHeight = false;
+            gameObject.gameBoardInfo.viewHeight = 3;
+            gameObject.uiInfo.heightAdjust.heightValue = String(gameObject.gameBoardInfo.viewHeight);
+        }
+        else if(gameObject.gameBoardInfo.viewHeight > 0){
+            gameObject.gameBoardInfo.viewHeight = gameObject.gameBoardInfo.viewHeight - 1;
+            gameObject.uiInfo.heightAdjust.heightValue = String(gameObject.gameBoardInfo.viewHeight);
+        }
+    }
+    if(checkInRect(userInput[0], userInput[1], [gameObject.uiInfo.heightAdjust.Location[0] - gameObject.uiInfo.heightAdjust.Width/2, gameObject.uiInfo.heightAdjust.Location[1] - gameObject.uiInfo.heightAdjust.Height - gameObject.uiInfo.heightAdjust.Offset/2], gameObject.uiInfo.heightAdjust.Width, gameObject.uiInfo.heightAdjust.Height)){
+        if(gameObject.gameBoardInfo.viewHeight < 3){
+            gameObject.gameBoardInfo.viewHeight = gameObject.gameBoardInfo.viewHeight + 1;
+            gameObject.uiInfo.heightAdjust.heightValue = String(gameObject.gameBoardInfo.viewHeight);
+        }else{
+            gameObject.gameBoardInfo.autoViewHeight = true;  
+            gameObject.uiInfo.heightAdjust.heightValue = String("Auto");
+        }
     }
 }
 
@@ -82,39 +115,60 @@ function handleEndTurn(userInput){
 
 function handleHexBoard(userInput){
     let turnIndex = gameObject.actorInfo.turnIndex;
+    let actorInfo = gameObject.actorInfo.actors[turnIndex];
+    // For each node in the current hexboard
     for(let nodeIndex = 0; nodeIndex < gameObject.uiInfo.hexBoards[turnIndex].nodes.length; nodeIndex++){
+        // If mouse on node
         if(checkInCircle(userInput[0], userInput[1], gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].coordinate, gameObject.uiInfo.hexBoards[turnIndex].pointSizeLarge + 5)){
+            // If no node is selected
             if(gameObject.uiInfo.hexBoards[turnIndex].selectedNode == null){
+                // If node is unselected and unactivated then activate it
                 if(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].status == "unselected" && gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated == "false"){
-                    gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated = "true";
-                    continue;
+                    if(gameObject.gameBoardInfo.turnInfo.newNodesActivated < actorInfo.maxNewNodes){
+                        gameObject.gameBoardInfo.turnInfo.newNodesActivated += 1;
+                        gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated = "true";
+                        continue;
+                    }
                 }
+                // If node is unselected and activated then select it
                 if(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].status == "unselected" && gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated == "true"){
                     gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].status = "selected";
                     gameObject.uiInfo.hexBoards[turnIndex].selectedNode = gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex];
                     continue;
                 }
+            // There is a selected node
             }else{
+                // If the node is a neighbour of the selected node
                 if(gameObject.uiInfo.hexBoards[turnIndex].selectedNode.neighbours.includes(nodeIndex)){
+                    // If the node is not activated
                     if(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated == "false"){
+                        // If node can be added to a link
                         if(checkLinkSize(gameObject.uiInfo.hexBoards[turnIndex].selectedNode.index)){
-                            gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated = "true";
-                            gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].links.push(gameObject.uiInfo.hexBoards[turnIndex].selectedNode.index);
-                            gameObject.uiInfo.hexBoards[turnIndex].selectedNode.links.push(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].index);
-                            gameObject.uiInfo.hexBoards[turnIndex].selectedNode.status = "unselected";
-                            gameObject.uiInfo.hexBoards[turnIndex].selectedNode = null;
-                            continue;
+                            // activate the node, push it to the link, unselect selected node
+                            if(gameObject.gameBoardInfo.turnInfo.nodeLinksCreated < actorInfo.maxNewLinks){
+                                gameObject.gameBoardInfo.turnInfo.nodeLinksCreated += 1;
+                                gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].activated = "true";
+                                gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].links.push(gameObject.uiInfo.hexBoards[turnIndex].selectedNode.index);
+                                gameObject.uiInfo.hexBoards[turnIndex].selectedNode.links.push(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].index);
+                                gameObject.uiInfo.hexBoards[turnIndex].selectedNode.status = "unselected";
+                                gameObject.uiInfo.hexBoards[turnIndex].selectedNode = null;
+                                continue;
+                            }
                         }
                     }
                 }
+                //If node is the selected node
                 if(nodeIndex == gameObject.uiInfo.hexBoards[turnIndex].selectedNode.index){
+                    // Unselect
                     gameObject.uiInfo.hexBoards[turnIndex].selectedNode.status = "unselected";
                     gameObject.uiInfo.hexBoards[turnIndex].selectedNode = null;
                 }
             }
         }
     }
+    // Update actions based on new nodes
     updatePossibleAction();
+
     gameObject.uiInfo.hexBoards[turnIndex].formTriangles();
 }
 
@@ -128,7 +182,7 @@ function checkLinkSize(nodeIndex){
     if(gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].links.length >= 2){
         return false;
     }
-    //go through middles linnk  node and check link length
+    //go through middles link  node and check link length
     if(gameObject.uiInfo.hexBoards[turnIndex].nodes[gameObject.uiInfo.hexBoards[turnIndex].nodes[nodeIndex].links[0]].links.length >= 2){
         return false;
     }

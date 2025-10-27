@@ -1,71 +1,26 @@
 function drawGameBoard(gameBoardInfo, actorInfo){
-    drawMap(gameBoardInfo.backGroundMap, gameBoardInfo.hoveredTileIndex);
-    drawActions(gameBoardInfo.actionMap, gameBoardInfo.hoveredTileIndex);
-    drawActors(gameBoardInfo.actorsMap, gameBoardInfo.hoveredTileIndex, actorInfo);
+    drawMap(gameBoardInfo.backGroundMap, gameBoardInfo.hoveredTileIndex, gameBoardInfo.actionMap);
+    drawObjects(gameBoardInfo.objectsIdMap, gameBoardInfo.actionMap, gameBoardInfo.hoveredTileIndex, actorInfo, gameBoardInfo.viewHeight, gameBoardInfo.autoViewHeight);
     drawAnimatedObjects(gameBoardInfo.animatedObjects);
 }
 
 //Rendering Actions
-function drawActions(map, hoveredTileIndex){
+function drawActions(map, hoveredTileIndex, objectsMap){
     for (let x = 0; x < map[0].length; x += 1) {
         for (let y = 0; y < map.length; y += 1) {
             if(x == hoveredTileIndex[0] && y == hoveredTileIndex[1]){
-                drawAction(x, y, map[x][y], true)
+                drawAction(x, y, map[x][y], true, objectsMap[x][y].height)
             }else{
-                drawAction(x, y, map[x][y], false)
+                drawAction(x, y, map[x][y], false, objectsMap[x][y].height)
             }
         }
     }
 }
 
-function drawAction(x, y, a, hovered){
-
-    let  actionShrinkFactor = 5;
-    
-    //Determine what to draw
-    if(a == 0){
-        return
-    }
-
-    /*
-    if(hovered){
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = '#464646';
-    }else{
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#b4b4b4';
-    }*/
-
-    /*
-    px = startTile[0] + (x-y)*(tileWidth/2);
-    py = startTile[1] + (x+y)*(tileHeight/2);
-    py = py+tileHeight/2;
-    ctx.beginPath();
-    ctx.arc(px, py, pointSizeSmall, 0, 2 * Math.PI);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-    ctx.closePath();
-
-    /*
-
-    ctx.beginPath(); // Start a new path
-    ctx.moveTo(px, py); // Move the pen to start location
-    ctx.lineTo(px + (tileWidth-actionShrinkFactor)/2, py + (tileHeight-actionShrinkFactor)/2); // Draw first line
-    ctx.stroke(); // Render the path
-    ctx.lineTo(px, py + (tileHeight-actionShrinkFactor)); // Draw second line
-    ctx.stroke(); // Render the path
-    ctx.lineTo(px - (tileWidth-actionShrinkFactor)/2, py + (tileHeight-actionShrinkFactor)/2); // Draw third line
-    ctx.stroke(); // Render the path
-    ctx.lineTo(px, py); // Draw fourth line
-    ctx.stroke(); // Render the path
-    */
-
+function drawAction(px, py){
     ctx.lineWidth = 1;
     ctx.strokeStyle = '#ffffff';
     ctx.fillStyle = "#ffffff";
-    //ctx.fillStyle = '#ffffff';
-    px = startTile[0] + (x-y)*(tileWidth/2);
-    py = startTile[1] + (x+y)*(tileHeight/2);
     py = py + 3*tileHeight/8;
     ctx.beginPath(); // Start a new path
     ctx.moveTo(px, py); // Move the pen to start location
@@ -81,23 +36,33 @@ function drawAction(x, y, a, hovered){
     ctx.fill();
 }
 
-//Rendering Actors
-function drawActors(map, hoveredTileIndex, actorInfo){
+//Rendering Obejects
+function drawObjects(map, actionMap, hoveredTileIndex, actorInfo, viewHeight, autoViewHeight){
     for (let x = 0; x < map[0].length; x += 1) {
         for (let y = 0; y < map.length; y += 1) {
             switch(map[x][y]){
-                case 1: case 2: case 4:
-                    drawActor(x, y, map[x][y], hoveredTileIndex, actorInfo);
+                case 1: case 2:
+                    drawActor(x, y, map[x][y], hoveredTileIndex, actorInfo, viewHeight, autoViewHeight, actionMap);
                     break;
                 case 3:
-                    drawWall(x, y, hoveredTileIndex);
+                    drawWall(x, y, hoveredTileIndex, 1, viewHeight, autoViewHeight, actionMap[x][y]);
+                    break;
+                case 4:
+                    drawWall(x, y, hoveredTileIndex, 2, viewHeight, autoViewHeight, actionMap[x][y]);
+                    break;
+                case 5:
+                    drawWall(x, y, hoveredTileIndex, 3, viewHeight, autoViewHeight, actionMap[x][y]);
                     break;
             }
         }
     }
 }
 
-function drawActor(x, y, a, hoveredTileIndex, actorInfo){
+function drawActor(x, y, a, hoveredTileIndex, actorInfo, viewHeight, autoViewHeight, actionMap){
+    let height = actorInfo.actors[a-1].height;
+    if(height > 0){
+        drawWall(x, y, hoveredTileIndex, height, viewHeight, autoViewHeight, actionMap[x][y]);
+    }
     //Determine what to draw
     if(a == 0){
         return
@@ -115,8 +80,12 @@ function drawActor(x, y, a, hoveredTileIndex, actorInfo){
     }
     //Draw it
     px = startTile[0] + (x-y)*(tileWidth/2);
-    py = startTile[1] + (x+y)*(tileHeight/2);
+    py = startTile[1] + (x+y)*(tileHeight/2) - height*tileHeight;
     ctx.beginPath();
+
+    if(x == hoveredTileIndex[0] && y == hoveredTileIndex[1]){
+        py = startTile[1] + (x+y)*(tileHeight/2) - height*tileHeight - 10;
+    }
     if(x == hoveredTileIndex[0] && y == hoveredTileIndex[1]){
         ctx.arc(px, py, radius+3, 0, 2 * Math.PI);
     }else{
@@ -144,15 +113,15 @@ function drawActor(x, y, a, hoveredTileIndex, actorInfo){
 }
 
 //Rendering Map
-function drawMap(map, hoveredTileIndex){
+function drawMap(map, hoveredTileIndex, actionMap){
     for (let x = 0; x < map[0].length; x += 1) {
         for (let y = 0; y < map.length; y += 1) {
             switch(map[x][y]){
                 case 0:
                     if(x == hoveredTileIndex[0] && y == hoveredTileIndex[1]){
-                        drawTile(x, y, true)
+                        drawTile(x, y, true, actionMap[x][y])
                     }else{
-                        drawTile(x, y, false)
+                        drawTile(x, y, false, actionMap[x][y])
                     }
                     break;
             }
@@ -161,7 +130,7 @@ function drawMap(map, hoveredTileIndex){
     }
 }
 
-function drawTile(x, y, hovered){
+function drawTile(x, y, hovered, actionMap){
     ctx.lineWidth = 1;
     ctx.strokeStyle = '#ffffff';
     ctx.fillStyle = 'Black';
@@ -182,7 +151,6 @@ function drawTile(x, y, hovered){
     ctx.closePath();
     ctx.fill();
 
-    
     if(hovered){
         ctx.lineWidth = 1;
         ctx.strokeStyle = '#ffffff';
@@ -205,18 +173,19 @@ function drawTile(x, y, hovered){
         ctx.fill();
     }
 
+    if(actionMap == 1){
+        drawAction(px,py);
+    }
 }
 
-function drawWall(x, y, hoveredTileIndex){
+function drawWall(x, y, hoveredTileIndex, height, viewHeight, autoViewHeight, actionMap){
     let hovered = false;
     let trueHovered = false;
 
     if(x == hoveredTileIndex[0] && y == hoveredTileIndex[1]){
         hovered = true;
         trueHovered = true;
-
     }
-
     if((x) == hoveredTileIndex[0] && (y-1) == hoveredTileIndex[1]){
         hovered = true;
     }
@@ -249,19 +218,84 @@ function drawWall(x, y, hoveredTileIndex){
         hovered = true;
     }
 
-    let wallHeight = tileHeight;
-    let px = startTile[0] + (x-y)*(tileWidth/2);
-    let py = startTile[1] + (x+y)*(tileHeight/2);
+    if(autoViewHeight){
+        hovered = false;
+    }
 
+    for(let heightIndex = 0; heightIndex<height; heightIndex++){
+        let px = startTile[0] + (x-y)*(tileWidth/2);
+        let py = startTile[1] + (x+y)*(tileHeight/2) - tileHeight*heightIndex;
+        if(hovered && viewHeight == heightIndex){
+            let px = startTile[0] + (x-y)*(tileWidth/2);
+            let py = startTile[1] + (x+y)*(tileHeight/2) - tileHeight*viewHeight-viewHeight;
+            drawGreySquare(px,py);
+        }
+        if(heightIndex+1 > viewHeight){
+            if(autoViewHeight && hovered){
+                if(viewHeight == heightIndex){
+                    let px = startTile[0] + (x-y)*(tileWidth/2);
+                    let py = startTile[1] + (x+y)*(tileHeight/2) - tileHeight*(heightIndex)-heightIndex;
+                    drawAction(px, py);
+                }
+            }
+            drawCube(px, py, hovered, heightIndex);
+        }else{
+            drawCube(px, py, false, heightIndex);
+        }
+        if(autoViewHeight){
+            if((height-1) == heightIndex && actionMap == 1){
+                let px = startTile[0] + (x-y)*(tileWidth/2);
+                let py = startTile[1] + (x+y)*(tileHeight/2) - tileHeight*(heightIndex+1)-heightIndex;
+                drawAction(px, py);
+            }
+        }
+    }
+
+    if(trueHovered && actionMap == 1){
+        let px = startTile[0] + (x-y)*(tileWidth/2);
+        let py = startTile[1] + (x+y)*(tileHeight/2) - tileHeight*viewHeight-viewHeight;
+        drawAction(px,py);
+    }
+
+    if(trueHovered){
+        let px = startTile[0] + (x-y)*(tileWidth/2);
+        let py = startTile[1] + (x+y)*(tileHeight/2) - tileHeight*viewHeight-viewHeight;
+        drawHoveredSquare(px,py);
+    }
+}
+
+function drawHoveredSquare(px,py){
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#ffffff';
+    ctx.fillStyle = 'rgba(0,0,0,0)';
+    py = py + tileHeight/4;
+    ctx.beginPath(); // Start a new path
+    ctx.moveTo(px, py); // Move the pen to start location
+    ctx.lineTo(px + tileWidth/4, py + tileHeight/4); // Draw first line
+    ctx.stroke(); // Render the path
+    ctx.lineTo(px, py + tileHeight/2); // Draw second line
+    ctx.stroke(); // Render the path
+    ctx.lineTo(px - tileWidth/4, py + tileHeight/4); // Draw third line
+    ctx.stroke(); // Render the path
+    ctx.lineTo(px,py); // Draw fourth line
+    ctx.stroke(); // Render the path
+    ctx.closePath();
+    ctx.fill();
+}
+
+function drawCube(x,y,transparent,height){
+    let wallHeight = tileHeight + height;
+    px = x;
+    py = y;
 
     //Draw Left Face
-    if(hovered){
+    if(transparent){
         ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = 'rgba(0,0,0,0)';
     }else{
         ctx.lineWidth = 1;
         ctx.strokeStyle = '#ffffff';
-        ctx.fillStyle = '#464646';
+        ctx.fillStyle = '#303030';
     }
 
     ctx.beginPath();
@@ -279,9 +313,7 @@ function drawWall(x, y, hoveredTileIndex){
 
 
     //Draw Right Face
-
-    
-    if(hovered){
+    if(transparent){
         ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = 'rgba(0,0,0,0)';
     }else{
@@ -304,15 +336,32 @@ function drawWall(x, y, hoveredTileIndex){
     ctx.fill();
 
     py = py - wallHeight;
-    //Draw Second Square
 
-    if(hovered){
+    //Draw Second Square
+    if(transparent){
         ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = 'rgba(0,0,0,0)';
     }else{
         ctx.lineWidth = 1;
         ctx.strokeStyle = '#ffffff';
         ctx.fillStyle = '#b4b4b4';
+        switch(height){
+            case 0: 
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = '#ffffff';
+                ctx.fillStyle = '#545454';
+                break;
+            case 1:
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = '#ffffff';
+                ctx.fillStyle = '#616060';
+                break;
+            case 2:
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = '#ffffff';
+                ctx.fillStyle = '#706f6f';
+                break;
+        }
     }
 
     ctx.beginPath(); // Start a new path
@@ -328,48 +377,22 @@ function drawWall(x, y, hoveredTileIndex){
     ctx.closePath()
     ctx.fill();
     ctx.setLineDash([]);
+}
 
-    if(hovered){
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = '#ffffff';
-        ctx.fillStyle = '#464646';
-
-        px = startTile[0] + (x-y)*(tileWidth/2);
-        py = startTile[1] + (x+y)*(tileHeight/2);
-        
-        ctx.beginPath(); // Start a new path
-        ctx.moveTo(px, py); // Move the pen to start location
-        ctx.lineTo(px + tileWidth/2, py + tileHeight/2); // Draw first line
-        ctx.stroke(); // Render the path
-        ctx.lineTo(px, py + tileHeight); // Draw second line
-        ctx.stroke(); // Render the path
-        ctx.lineTo(px - tileWidth/2, py + tileHeight/2); // Draw third line
-        ctx.stroke(); // Render the path
-        ctx.lineTo(px, py); // Draw fourth line
-        ctx.stroke(); // Render the path
-        ctx.closePath();
-        ctx.fill();
-
-        if(trueHovered){
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = '#ffffff';
-            //ctx.fillStyle = '#ffffff';
-            px = startTile[0] + (x-y)*(tileWidth/2);
-            py = startTile[1] + (x+y)*(tileHeight/2);
-            py = py + tileHeight/4;
-            ctx.beginPath(); // Start a new path
-            ctx.moveTo(px, py); // Move the pen to start location
-            ctx.lineTo(px + tileWidth/4, py + tileHeight/4); // Draw first line
-            ctx.stroke(); // Render the path
-            ctx.lineTo(px, py + tileHeight/2); // Draw second line
-            ctx.stroke(); // Render the path
-            ctx.lineTo(px - tileWidth/4, py + tileHeight/4); // Draw third line
-            ctx.stroke(); // Render the path
-            ctx.lineTo(px,py); // Draw fourth line
-            ctx.stroke(); // Render the path
-            ctx.closePath();
-            ctx.fill();
-        }
-    }
-    
+function drawGreySquare(px,py){
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#ffffff';
+    ctx.fillStyle = '#464646';
+    ctx.beginPath(); // Start a new path
+    ctx.moveTo(px, py); // Move the pen to start location
+    ctx.lineTo(px + tileWidth/2, py + tileHeight/2); // Draw first line
+    ctx.stroke(); // Render the path
+    ctx.lineTo(px, py + tileHeight); // Draw second line
+    ctx.stroke(); // Render the path
+    ctx.lineTo(px - tileWidth/2, py + tileHeight/2); // Draw third line
+    ctx.stroke(); // Render the path
+    ctx.lineTo(px, py); // Draw fourth line
+    ctx.stroke(); // Render the path
+    ctx.closePath();
+    ctx.fill();
 }

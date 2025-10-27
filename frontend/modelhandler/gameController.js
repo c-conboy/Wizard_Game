@@ -2,58 +2,65 @@ let gameObject = new Object();
 gameObject.gameBoardInfo = new Object();
 
 gameObject.gameBoardInfo.backGroundMap = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
 gameObject.gameBoardInfo.actionMap = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-gameObject.gameBoardInfo.actorsMap = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0],
-    [1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 2, 0],
-    [0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+gameObject.gameBoardInfo.objectsIdMap = [
+    [0, 0, 0, 3, 4, 5, 4, 3, 0, 0, 0],
+    [0, 0, 0, 0, 3, 4, 3, 0, 0, 0, 0],
+    [0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0],
+    [0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0],
+    [0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 5, 5, 5, 0, 0, 0, 2],
+    [0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0],
+    [0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0],
+    [0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0],
+    [0, 0, 0, 0, 3, 4, 3, 0, 0, 0, 0],
+    [0, 0, 0, 3, 4, 5, 4, 3, 0, 0, 0],
 ]
+
+gameObject.gameBoardInfo.objectsMap = generateObjectsMap(gameObject.gameBoardInfo.objectsIdMap);
 
 gameObject.actorInfo = new Object ();
-gameObject.actorInfo.turnIndex = 0;  
-gameObject.actorInfo.actors = [player1, player2];                                   
+gameObject.actorInfo.turnIndex = 0;
+gameObject.actorInfo.actors = [player1, player2];
 
-gameObject.gameBoardInfo.selectedAction = moveAction  
+gameObject.gameBoardInfo.selectedAction = moveAction;
 gameObject.gameBoardInfo.hoveredTileIndex = [null,null];
 gameObject.gameBoardInfo.bounds = [gameObject.gameBoardInfo.actionMap.length - 1, gameObject.gameBoardInfo.actionMap[0].length - 1];
 gameObject.gameBoardInfo.animatedObjects = null;
+gameObject.gameBoardInfo.viewHeight = 3;
+gameObject.gameBoardInfo.autoViewHeight = true;  
+
+gameObject.gameBoardInfo.turnInfo = new Object();
+gameObject.gameBoardInfo.turnInfo.actionsTaken = 0;
+gameObject.gameBoardInfo.turnInfo.newNodesActivated = 0;
+gameObject.gameBoardInfo.turnInfo.nodeLinksCreated = 0;
+
 
 gameObject.uiInfo = new Object();
 gameObject.uiInfo.possibleActions = new Array();
@@ -74,6 +81,14 @@ gameObject.uiInfo.rotate.Height = rotateHeight;
 gameObject.uiInfo.rotate.Width = rotateWidth;
 gameObject.uiInfo.rotate.Offset = rotateOffset;
 
+gameObject.uiInfo.heightAdjust = new Object();
+gameObject.uiInfo.heightAdjust.hoveredTriangleIndex = null;
+gameObject.uiInfo.heightAdjust.Location = heightAdjustStart;
+gameObject.uiInfo.heightAdjust.Height = heightAdjustHeight;
+gameObject.uiInfo.heightAdjust.Width = heightAdjustWidth;
+gameObject.uiInfo.heightAdjust.Offset = heightAdjustOffset;
+gameObject.uiInfo.heightAdjust.heightValue = String("Auto");
+
 gameObject.uiInfo.endTurn = new Object();
 gameObject.uiInfo.endTurn.Hovered = false;
 gameObject.uiInfo.endTurn.Location = endTurnStart;
@@ -93,7 +108,7 @@ gameObject.uiInfo.spellList.spellListEntryHeight = spellListEntryHeight;
 gameObject.uiInfo.spellList.entriesPerPage = Math.min(Math.ceil(spellListHeight/spellListEntryHeight), gameObject.uiInfo.spellList.spells.length);
 
 gameObject.animationInfo = new Object();
-gameObject.animationInfo.totalFrames = 45;
+gameObject.animationInfo.totalFrames = 30;
 gameObject.animationInfo.frameCount = 0;
 gameObject.animationInfo.inAnimation = false;
 gameObject.animationInfo.origin = null;
@@ -113,15 +128,15 @@ function calculate(userInput){
             }
         }else{
             gameObject.animationInfo.frameCount = gameObject.animationInfo.frameCount + 1;
-            return gameObject;
         }
     }
-    if(!userInput.mouseInformation.click){
+    else if(!userInput.mouseInformation.click){
         updateHoveredObjects(userInput.mouseInformation.coordinates);
-        return gameObject;
+    } else {
+        handleUI(userInput.mouseInformation.clickCoordinates);
+        handleGameBoard(userInput.mouseInformation.clickCoordinates);
     }
-    handleUI(userInput.mouseInformation.clickCoordinates);
-    handleGameBoard(userInput.mouseInformation.clickCoordinates);
+    gameObject.gameBoardInfo.objectsIdMap = generateObjectIdMap(gameObject.gameBoardInfo.objectsMap);
     return gameObject;
 }
 

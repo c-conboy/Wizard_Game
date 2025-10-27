@@ -9,24 +9,38 @@ class Action {
     }
 }
 
-moveAction = new Action("Move", actionWithinRange, move, 1, [], spellDescriptions["Move"]);
-shootAction = new Action("Shoot", actionWithinRange, shoot, 2, ["Fire"], spellDescriptions["Shoot"]);
-jumpAction = new Action("Jump", actionWithinRangeLOS, move, 2.5, ["Sun", "Fire", "Singularity"], spellDescriptions["Jump"]);
+moveAction = new Action("Move", straightLines, move, 1, [], spellDescriptions["Move"]);
+shootAction = new Action("Shoot", multiLines, shoot, 2, ["Fire"], spellDescriptions["Shoot"]);
+jumpAction = new Action("Jump", actionWithinRange, move, 6, ["Sun", "Fire", "Singularity"], spellDescriptions["Jump"]);
 shakeAction = new Action("Shake", actionWithinRange, shake, 0, ["Earth", "Air", "Spirit"], spellDescriptions["Shake"]);
 
 function move(destination){
-    gameObject.animationInfo.origin = localToGlobal(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id));
-    gameObject.animationInfo.target = localToGlobal(destination);
+    let originLocalCoordinates = getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id);
+    let originHeight = gameObject.gameBoardInfo.objectsMap[originLocalCoordinates[0]][originLocalCoordinates[1]].height;
+    let originGlobalCoordinates = localToGlobal(originLocalCoordinates);
+    gameObject.animationInfo.origin = [originGlobalCoordinates[0], originGlobalCoordinates[1] - originHeight*tileHeight];
+
+    let destinationHeight = gameObject.gameBoardInfo.objectsMap[destination[0]][destination[1]].height;
+    globalDestination = localToGlobal(destination);
+    gameObject.animationInfo.target = [globalDestination[0], globalDestination[1] - destinationHeight*tileHeight];
+
     gameObject.animationInfo.onCompleteMethod = updateActorLocation;
-    gameObject.animationInfo.onCompleteArguments = [gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id, destination]
+    gameObject.animationInfo.onCompleteArguments = [gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex], destination]
     gameObject.animationInfo.inAnimation = true;
 }
 
 function shoot(destination){
-    gameObject.animationInfo.origin = localToGlobal(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id));
-    gameObject.animationInfo.target = localToGlobal(destination);
+    let originLocalCoordinates = getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id);
+    let originHeight = gameObject.gameBoardInfo.objectsMap[originLocalCoordinates[0]][originLocalCoordinates[1]].height;
+    let originGlobalCoordinates = localToGlobal(originLocalCoordinates);
+    gameObject.animationInfo.origin = [originGlobalCoordinates[0], originGlobalCoordinates[1] - originHeight*tileHeight];
+
+    let destinationHeight = gameObject.gameBoardInfo.objectsMap[destination[0]][destination[1]].height;
+    globalDestination = localToGlobal(destination);
+    gameObject.animationInfo.target = [globalDestination[0], globalDestination[1] - destinationHeight*tileHeight];
+
     gameObject.animationInfo.onCompleteMethod = function() {
-        gameObject.gameBoardInfo.actorsMap[destination[0]][destination[1]] = 4;
+        gameObject.gameBoardInfo.objectsMap[destination[0]][destination[1]].takeDamage(4);
     };
     gameObject.animationInfo.inAnimation = true;
 }
@@ -35,15 +49,75 @@ function shake(){
     gameObject.animationInfo.origin = localToGlobal(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id));
     gameObject.animationInfo.target = localToGlobal(getActorCoord(gameObject.actorInfo.actors[gameObject.actorInfo.turnIndex].id));
     gameObject.animationInfo.onCompleteMethod = function() {
-        updateActorsMap(3,0,[initialActorLocation[0]+1, initialActorLocation[1]]);
-        updateActorsMap(3,0,[initialActorLocation[0]-1, initialActorLocation[1]]);
-        updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]+1]);
-        updateActorsMap(3,0,[initialActorLocation[0], initialActorLocation[1]-1]);
+        updateObjectsMap(3,0,[initialActorLocation[0]+1, initialActorLocation[1]]);
+        updateObjectsMap(3,0,[initialActorLocation[0]-1, initialActorLocation[1]]);
+        updateObjectsMap(3,0,[initialActorLocation[0], initialActorLocation[1]+1]);
+        updateObjectsMap(3,0,[initialActorLocation[0], initialActorLocation[1]-1]);
     };
     gameObject.animationInfo.inAnimation = true;
 }
 
-function actionWithinRange(actorLocation, value, range){
+function straightLines(actorObject, value, range){
+    let actorLocation = getActorCoord(actorObject.id);
+    let top  =  Math.max(0, Math.ceil(actorLocation[1] - range));
+    let bottom = Math.min(gameObject.gameBoardInfo.bounds[1], Math.floor(actorLocation[1] + range));
+    let left   =  Math.max(0, Math.ceil(actorLocation[0]- range));
+    let right  = Math.min(gameObject.gameBoardInfo.bounds[0], Math.floor(actorLocation[0] + range));
+
+    for (let y = top; y <= bottom; y++) {
+        let x = actorLocation[0];
+        if(gameObject.gameBoardInfo.objectsMap[x][y].id == 0 || gameObject.gameBoardInfo.objectsMap[x][y].type == "Player" || gameObject.gameBoardInfo.objectsMap[x][y].type == "Wall"){
+            gameObject.gameBoardInfo.actionMap[x][y] = value;
+        }
+    }
+
+    for (let x = left; x <= right; x++) {
+        let y = actorLocation[1];
+        if(gameObject.gameBoardInfo.objectsMap[x][y].id == 0 || gameObject.gameBoardInfo.objectsMap[x][y].type == "Player" || gameObject.gameBoardInfo.objectsMap[x][y].type == "Wall"){
+            gameObject.gameBoardInfo.actionMap[x][y] = value;
+        }
+    }
+}
+
+function diagonalLines(actorObject, value, range){
+    let actorLocation = getActorCoord(actorObject.id);
+    let top  =  Math.max(0, Math.ceil(actorLocation[1] - range));
+    let bottom = Math.min(gameObject.gameBoardInfo.bounds[1], Math.floor(actorLocation[1] + range));
+    let left   =  Math.max(0, Math.ceil(actorLocation[0]- range));
+    let right  = Math.min(gameObject.gameBoardInfo.bounds[0], Math.floor(actorLocation[0] + range));
+
+    for (let y = top; y <= bottom; y++) {
+        for (let x = left; x <= right; x++) {
+            if (Math.abs(actorLocation[0]-x) == Math.abs(actorLocation[1]-y)) {
+                if(gameObject.gameBoardInfo.objectsMap[x][y].id == 0 || gameObject.gameBoardInfo.objectsMap[x][y].type == "Player" || gameObject.gameBoardInfo.objectsMap[x][y].type == "Wall"){
+                    gameObject.gameBoardInfo.actionMap[x][y] = value;
+                }
+            }
+        }
+    }
+}
+
+function multiLines(actorObject, value, range){
+    let actorLocation = getActorCoord(actorObject.id);
+    let top  =  Math.max(0, Math.ceil(actorLocation[1] - range));
+    let bottom = Math.min(gameObject.gameBoardInfo.bounds[1], Math.floor(actorLocation[1] + range));
+    let left   =  Math.max(0, Math.ceil(actorLocation[0]- range));
+    let right  = Math.min(gameObject.gameBoardInfo.bounds[0], Math.floor(actorLocation[0] + range));
+
+    for (let y = top; y <= bottom; y++) {
+        for (let x = left; x <= right; x++) {
+            if (Math.abs(actorLocation[0]-x) == Math.abs(actorLocation[1]-y) || actorLocation[0] == x || actorLocation[1] == y) {
+                if(gameObject.gameBoardInfo.objectsMap[x][y].id == 0 || gameObject.gameBoardInfo.objectsMap[x][y].type == "Player" || gameObject.gameBoardInfo.objectsMap[x][y].type == "Wall"){
+                    gameObject.gameBoardInfo.actionMap[x][y] = value;
+                }
+            }
+        }
+    }
+}
+
+
+function actionWithinRange(actorObject, value, range){
+    let actorLocation = getActorCoord(actorObject.id);
     let top  =  Math.max(0, Math.ceil(actorLocation[1] - range));
     let bottom = Math.min(gameObject.gameBoardInfo.bounds[1], Math.floor(actorLocation[1] + range));
     let left   =  Math.max(0, Math.ceil(actorLocation[0]- range));
@@ -52,15 +126,17 @@ function actionWithinRange(actorLocation, value, range){
     for (let y = top; y <= bottom; y++) {
         for (let x = left; x <= right; x++) {
             if (insideCircle(actorLocation, [x,y], range)) {
-                if(gameObject.gameBoardInfo.actorsMap[x][y] == 0 || gameObject.gameBoardInfo.actorsMap[x][y] == 3){
-                    gameObject.gameBoardInfo.actionMap[x][y] = value; 
+                if(gameObject.gameBoardInfo.objectsMap[x][y].id == 0 || gameObject.gameBoardInfo.objectsMap[x][y].type == "Player" || gameObject.gameBoardInfo.objectsMap[x][y].type == "Wall"){
+                    gameObject.gameBoardInfo.actionMap[x][y] = value;
                 }
             }
         }
     }
 }
 
-function actionWithinRangeLOS(actorLocation, value, range){
+function actionWithinRangeLOS(actorObject, value, range){
+    let actorLocation = getActorCoord(actorObject.id);
+
     let top  =  Math.max(0, Math.ceil(actorLocation[1] - range));
     let bottom = Math.min(gameObject.gameBoardInfo.bounds[1], Math.floor(actorLocation[1] + range));
     let left   =  Math.max(0, Math.ceil(actorLocation[0]- range));
@@ -71,10 +147,10 @@ function actionWithinRangeLOS(actorLocation, value, range){
             if (!insideCircle(actorLocation, [x,y], range)) {
                 continue;
             }
-            if(!inLOS(actorLocation, [x,y], range)){
+            if(!inLOS(actorLocation, actorObject.height, [x,y], range)){
                 continue;
             }
-            if(gameObject.gameBoardInfo.actorsMap[x][y] != 0){
+            if(gameObject.gameBoardInfo.objectsMap[x][y].type == "Wall"){
                 continue;
             }
             gameObject.gameBoardInfo.actionMap[x][y] = value; 
@@ -82,7 +158,8 @@ function actionWithinRangeLOS(actorLocation, value, range){
     }
 }
 
-function inLOS(center, tile, radius) {
+
+function inLOS(center, height, tile, radius) {
 
     let inLOS = true;
 
@@ -108,37 +185,36 @@ function inLOS(center, tile, radius) {
 
     let error = dx - dy;
 
-
-    inLOS = eLineAlgo(n, x, y, x_inc, y_inc, error, dx, dy);
+    inLOS = eLineAlgo(n, x, y, x_inc, y_inc, error, dx, dy, height);
 
     return inLOS;
 }
 
 
-function eLineAlgo(n, x, y, x_inc, y_inc, error, dx, dy){
+function eLineAlgo(n, x, y, x_inc, y_inc, error, dx, dy, height){
     n--;
     if(n <=0){
         return true;
     }
 
-    if(gameObject.gameBoardInfo.actorsMap[x][y] == 3){
+    if(gameObject.gameBoardInfo.objectsMap[x][y].id > height+2){
         return false;
     }
 
     if(error > 0){
         x+=x_inc;
         error-=dy;
-        return eLineAlgo(n, x, y, x_inc, y_inc, error, dx, dy);
+        return eLineAlgo(n, x, y, x_inc, y_inc, error, dx, dy, height);
     }else if (error < 0){
         y+=y_inc;
         error += dx;
-        return eLineAlgo(n, x, y, x_inc, y_inc, error, dx, dy);
+        return eLineAlgo(n, x, y, x_inc, y_inc, error, dx, dy, height);
     }else if (error == 0){
         let x1 = x + x_inc;
         let y1 = y + y_inc;
         let  error1 = error - dy;
         let error2 = error + dx;
-        return eLineAlgo(n, x1, y, x_inc, y_inc, error1, dx, dy) || eLineAlgo(n, x, y1, x_inc, y_inc, error2, dx, dy);
+        return eLineAlgo(n, x1, y, x_inc, y_inc, error1, dx, dy, height) || eLineAlgo(n, x, y1, x_inc, y_inc, error2, dx, dy, height);
     }
 }
 

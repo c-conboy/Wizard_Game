@@ -1,11 +1,17 @@
 
 function drawUI(uiInfo){
     drawPossibleActions(uiInfo.possibleActions);
-    drawRotateButtons(uiInfo.rotate)
+    drawRotateButtons(uiInfo.rotate);
+    drawHeightAdjust(uiInfo.heightAdjust);
     drawEndTurn(uiInfo.endTurn);
     drawHexBoard(uiInfo.hexBoards);
     drawSpellList(uiInfo.spellList);
-    drawLines();
+    drawActorInfo();
+    //drawLines();
+}
+
+function drawActorInfo(actorInfo){
+    ctx.fillText("Player 1", 100,100);
 }
 
 function drawPossibleActions(possibleActions){
@@ -55,6 +61,36 @@ function drawRotateButtons(rotate){
     ctx.moveTo(rotate.Location[0] + rotate.Width + rotate.Offset/2, rotate.Location[1]);
     ctx.lineTo(rotate.Location[0] + rotate.Offset/2, rotate.Location[1] + rotate.Height/2);
     ctx.lineTo(rotate.Location[0] + rotate.Offset/2, rotate.Location[1] - rotate.Height/2);
+    ctx.fill();
+    ctx.closePath();
+}
+
+function drawHeightAdjust(heightAdjust){
+    //Draw Upwards pointing triangle
+    ctx.beginPath();
+    ctx.fillStyle = "#b4b4b4";
+    ctx.fillText(heightAdjust.heightValue, heightAdjust.Location[0], heightAdjust.Location[1]);
+    if(heightAdjust.hoveredTriangleIndex == 0){
+        ctx.fillStyle = "#ffffff";
+    }else{
+        ctx.fillStyle = "#b4b4b4";
+    }
+    ctx.moveTo(heightAdjust.Location[0], heightAdjust.Location[1] - heightAdjust.Height - heightAdjust.Offset/2);
+    ctx.lineTo(heightAdjust.Location[0] + heightAdjust.Width/2, heightAdjust.Location[1] - heightAdjust.Offset/2);
+    ctx.lineTo(heightAdjust.Location[0] - heightAdjust.Width/2, heightAdjust.Location[1] - heightAdjust.Offset/2);
+    ctx.fill();
+    ctx.closePath();
+
+    //Draw Dowwards pointing triangle
+    ctx.beginPath();
+    if(heightAdjust.hoveredTriangleIndex == 1){
+        ctx.fillStyle = "#ffffff";
+    }else{
+        ctx.fillStyle = "#b4b4b4";
+    }
+    ctx.moveTo(heightAdjust.Location[0], heightAdjust.Location[1] + heightAdjust.Height + heightAdjust.Offset/2);
+    ctx.lineTo(heightAdjust.Location[0] + heightAdjust.Width/2, heightAdjust.Location[1] + heightAdjust.Offset/2);
+    ctx.lineTo(heightAdjust.Location[0] - heightAdjust.Width/2, heightAdjust.Location[1] + heightAdjust.Offset/2);
     ctx.fill();
     ctx.closePath();
 }

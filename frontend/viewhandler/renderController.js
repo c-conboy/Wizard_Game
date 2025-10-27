@@ -15,6 +15,7 @@ CanvasRenderingContext2D.prototype.clear =
     }
 
     this.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.globalAlpha = 1;
     ctx.fillStyle = 'Black';
     ctx.fillRect(0,0,canvas.width, canvas.height);
 

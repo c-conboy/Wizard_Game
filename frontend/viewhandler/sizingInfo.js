@@ -17,7 +17,7 @@ const horizontalSlice2 = horizontalSlice1 + 150;
 const horizontalSlice3 = horizontalSlice2 + 50;
 const horizontalSlice4 = horizontalSlice3 + 275;
 
-const numberOfTiles = 12;
+const numberOfTiles = 11;
 const tileWidth = Math.floor((verticalSlice2-verticalSlice1)/numberOfTiles);
 const tileHeight = tileWidth/2;
 const radius = Math.sqrt((tileWidth/2)**2 + (tileHeight/2)**2)/2;
@@ -34,7 +34,13 @@ const pointSizeLarge = 12;
 const rotateHeight = tileWidth;
 const rotateWidth = tileWidth;
 const rotateOffset = tileWidth*1.5;
-const rotateStart = [verticalStart + verticalSlice1 + (verticalSlice2-verticalSlice1)/2, horizontalSlice2 + (horizontalSlice3- horizontalSlice2)/2];
+const rotateStart = [verticalStart + verticalSlice1 + (verticalSlice2-verticalSlice1)/2 - 100, horizontalSlice2 + (horizontalSlice3- horizontalSlice2)/2];
+
+
+const heightAdjustHeight = tileWidth/2;
+const heightAdjustWidth = tileWidth/2;
+const heightAdjustOffset = tileWidth*0.75;
+const heightAdjustStart = [verticalStart + verticalSlice1 + (verticalSlice2-verticalSlice1)/2 + 100, horizontalSlice2 + (horizontalSlice3- horizontalSlice2)/2];
 
 const actionButtonWidth = 104;
 const actionButtonHeight = 30;
